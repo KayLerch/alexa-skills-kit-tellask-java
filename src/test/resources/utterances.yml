@@ -1,0 +1,26 @@
+IntentWithReprompts:
+  Utterances:
+    - "Hello {name}. Your current score is {credits}"
+    - "Welcome {name}. You got a score of {credits}"
+    - "Nice to meet you <p>{name}</p>. You got a score of {credits}"
+  Reprompts:
+    - "Reprompt"
+    - "Reprompt2"
+
+IntentWithoutReprompts:
+  Utterances:
+    - "Hello {name}. Your current score is {credits}"
+    - "Welcome {name}. You got a score of {credits}"
+    - "Nice to meet you <p>{name}</p>. You got a score of {credits}"
+
+IntentWithEmptyReprompts:
+  Utterances:
+    - "Hello {name}. Your current score is {credits}"
+    - "Welcome {name}. You got a score of {credits}"
+    - "Nice to meet you <p>{name}</p>. You got a score of {credits}"
+  Reprompts:
+
+IntentWithoutAny:
+
+IntentWithEmptyUtterance:
+  Utterances:
