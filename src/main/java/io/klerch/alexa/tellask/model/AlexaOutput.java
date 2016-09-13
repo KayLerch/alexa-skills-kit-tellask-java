@@ -1,6 +1,8 @@
 package io.klerch.alexa.tellask.model;
 
 import com.amazon.speech.ui.Card;
+import io.klerch.alexa.state.model.AlexaStateModel;
+import io.klerch.alexa.tellask.schema.AlexaOutputFormat;
 import io.klerch.alexa.tellask.util.ResourceUtteranceReader;
 import io.klerch.alexa.tellask.schema.UtteranceReader;
 import org.apache.commons.lang3.Validate;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class AlexaOutput {
     private String intentName;
@@ -79,21 +82,37 @@ public class AlexaOutput {
             this.intentName = intentName;
         }
 
+        public AlexaResponseBuilder withSlot(final String slotName, final Object slotValue) {
+            slots.add(new AlexaOutputSlot(slotName, slotValue));
+            return this;
+        }
+
+        public AlexaResponseBuilder withSlot(final String slotName, final Object slotValue, final AlexaOutputFormat slotFormat) {
+            slots.add(new AlexaOutputSlot(slotName, slotValue).formatAs(slotFormat));
+            return this;
+        }
+
         public AlexaResponseBuilder withSlot(final AlexaOutputSlot slot) {
             slots.add(slot);
             return this;
         }
 
-        public AlexaResponseBuilder withStateOf(final AlexaIntentModel... models) {
+        public AlexaResponseBuilder withState(final AlexaStateModel... models) {
             return withDeduplicatedStateOf(Arrays.asList(models));
         }
 
-        public AlexaResponseBuilder withStateOf(final Collection<AlexaIntentModel> models) {
+        public AlexaResponseBuilder withState(final Collection<AlexaStateModel> models) {
             return withDeduplicatedStateOf(models);
         }
 
-        private AlexaResponseBuilder withDeduplicatedStateOf(final Collection<AlexaIntentModel> models) {
-            models.stream().filter(model -> !this.models.contains(model)).forEach(this.models::add);
+        private Predicate<AlexaStateModel> notExists = ((final AlexaStateModel model) ->
+                !(this.models.stream().anyMatch(m -> m.getModel().equals(model))));
+
+
+        private AlexaResponseBuilder withDeduplicatedStateOf(final Collection<AlexaStateModel> stateModels) {
+            stateModels.stream().filter(notExists)
+                    .map(AlexaIntentModel::new)
+                    .forEach(models::add);
             return this;
         }
 

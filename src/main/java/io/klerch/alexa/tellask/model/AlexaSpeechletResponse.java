@@ -5,6 +5,7 @@ import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import io.klerch.alexa.tellask.util.YamlReader;
+import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -66,7 +67,7 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
     }
 
     public Reprompt getReprompt() {
-        if (reprompt != null) return reprompt;
+        if (reprompt != null || !output.shouldReprompt()) return reprompt;
 
         final String repromptSpeech = yamlReader.getRandomReprompt(output).orElse(null);
 
@@ -104,11 +105,10 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
                             .map(model -> model.getOutputSlot(slotName).orElse(null))
                             .findFirst().orElse(null));
 
-            if (outputSlot != null) {
-                slots.appendReplacement(buffer, outputSlot.getSsml());
-            }
+            Validate.notNull(outputSlot, "Could not replace placeholder with name {" + slotName + "} because no corresponding slot was set in the output.");
+            slots.appendReplacement(buffer, outputSlot.getSsml());
         }
         slots.appendTail(buffer);
-        return slots.toString();
+        return "<speak>" + buffer.toString() + "</speak>";
     }
 }

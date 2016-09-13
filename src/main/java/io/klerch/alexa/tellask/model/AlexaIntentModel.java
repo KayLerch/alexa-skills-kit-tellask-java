@@ -1,5 +1,6 @@
 package io.klerch.alexa.tellask.model;
 
+import io.klerch.alexa.state.handler.AlexaStateHandler;
 import io.klerch.alexa.state.model.AlexaStateIgnore;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.utils.AlexaStateException;
@@ -12,7 +13,25 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public abstract class AlexaIntentModel extends AlexaStateModel {
+public class AlexaIntentModel {
+    private AlexaStateModel model;
+
+    public AlexaIntentModel (final AlexaStateModel model) {
+        this.model = model;
+    }
+
+    public AlexaStateModel getModel() {
+        return this.model;
+    }
+
+    public AlexaStateHandler getHandler() {
+        return this.model.getHandler();
+    }
+
+    public void saveState() throws AlexaStateException {
+        this.model.saveState();
+    }
+
     @AlexaStateIgnore
     private final Logger log = Logger.getLogger(AlexaIntentModel.class);
 
@@ -20,7 +39,7 @@ public abstract class AlexaIntentModel extends AlexaStateModel {
         field.setAccessible(true);
         final AlexaSlotSave slotSave = field.getAnnotation(AlexaSlotSave.class);
         try {
-            return new AlexaOutputSlot(slotSave.SlotName(), get(field)).formatAs(slotSave.FormatAs());
+            return new AlexaOutputSlot(slotSave.SlotName(), model.get(field)).formatAs(slotSave.FormatAs());
         } catch (AlexaStateException e) {
             log.error(e);
             return null;
@@ -40,7 +59,7 @@ public abstract class AlexaIntentModel extends AlexaStateModel {
     }
 
     private Stream<Field> getSlotSavedFields() {
-        return Arrays.stream(this.getClass().getDeclaredFields())
+        return Arrays.stream(model.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(AlexaSlotSave.class));
     }
 

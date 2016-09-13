@@ -1,5 +1,6 @@
 package io.klerch.alexa.tellask.util;
 
+import io.klerch.alexa.tellask.ModelFactory;
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,10 +17,6 @@ public class YamlReaderTest {
     private final String intentWithEmptyReprompts = "IntentWithEmptyReprompts";
     private final String intentWithoutAny = "IntentWithoutAny";
     private final String intentWithEmptyUtterance = "IntentWithEmptyUtterance";
-
-    private AlexaOutput givenAlexaOutputWithIntent(final String intentName) {
-        return AlexaOutput.ask(intentName).build();
-    }
 
     @Before
     public void init() throws Exception {
@@ -63,7 +60,7 @@ public class YamlReaderTest {
         Assert.assertEquals(expectedIntentPhrases, utterances.size());
 
         // getUtterancesByAlexaOutput
-        utterances = reader.getUtterances(givenAlexaOutputWithIntent(intent));
+        utterances = reader.getUtterances(ModelFactory.givenAlexaOutputWithIntent(intent));
         Assert.assertNotNull(utterances);
         Assert.assertEquals(expectedIntentPhrases, utterances.size());
 
@@ -77,9 +74,9 @@ public class YamlReaderTest {
 
         // getRandomUtteranceByAlexaOutput
         if (expectedIntentPhrases > 0)
-            Assert.assertTrue(reader.getRandomUtterance(givenAlexaOutputWithIntent(intent)).isPresent());
+            Assert.assertTrue(reader.getRandomUtterance(ModelFactory.givenAlexaOutputWithIntent(intent)).isPresent());
         else
-            Assert.assertFalse(reader.getRandomUtterance(givenAlexaOutputWithIntent(intent)).isPresent());
+            Assert.assertFalse(reader.getRandomUtterance(ModelFactory.givenAlexaOutputWithIntent(intent)).isPresent());
 
         // getRepromptsByIntentName
         List<String> reprompts = reader.getReprompts(intent);
@@ -87,7 +84,7 @@ public class YamlReaderTest {
         Assert.assertEquals(expectedRepromptPhrases, reprompts.size());
 
         // getRepromptsByAlexaOutput
-        reprompts = reader.getReprompts(givenAlexaOutputWithIntent(intent));
+        reprompts = reader.getReprompts(ModelFactory.givenAlexaOutputWithIntent(intent));
         Assert.assertNotNull(reprompts);
         Assert.assertEquals(expectedRepromptPhrases, reprompts.size());
 
@@ -101,10 +98,10 @@ public class YamlReaderTest {
 
         // getRandomRepromptByAlexaOutput
         if (expectedRepromptPhrases > 0) {
-            Assert.assertTrue(reader.getRandomReprompt(givenAlexaOutputWithIntent(intent)).isPresent());
+            Assert.assertTrue(reader.getRandomReprompt(ModelFactory.givenAlexaOutputWithIntent(intent)).isPresent());
         }
         else {
-            Assert.assertFalse(reader.getRandomReprompt(givenAlexaOutputWithIntent(intent)).isPresent());
+            Assert.assertFalse(reader.getRandomReprompt(ModelFactory.givenAlexaOutputWithIntent(intent)).isPresent());
         }
     }
 }

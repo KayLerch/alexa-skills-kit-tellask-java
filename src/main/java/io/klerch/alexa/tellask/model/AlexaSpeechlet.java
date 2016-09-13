@@ -3,7 +3,7 @@ package io.klerch.alexa.tellask.model;
 import com.amazon.speech.speechlet.*;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import io.klerch.alexa.state.utils.AlexaStateException;
-import io.klerch.alexa.tellask.test.IntroductionHandler;
+import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
 import org.apache.log4j.Logger;
 
 public class AlexaSpeechlet implements Speechlet {
@@ -11,18 +11,21 @@ public class AlexaSpeechlet implements Speechlet {
 
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session) throws SpeechletException {
-
+        LOG.debug("Session has started.");
     }
 
     @Override
     public SpeechletResponse onLaunch(final LaunchRequest request, final Session session) throws SpeechletException {
+        LOG.debug("Session has launched.");
         return null;
     }
 
     @Override
     public SpeechletResponse onIntent(final IntentRequest request, final Session session) throws SpeechletException {
+        LOG.debug("Intent appeared.");
+
         final AlexaInput input = new AlexaInput(request, session);
-        final IntroductionHandler handler = new IntroductionHandler();
+        final AlexaIntentHandler handler = AlexaIntentHandlerFactory.createHandler(input);
         try {
             final AlexaOutput output = handler.handleIntent(input);
             // save state of all models
@@ -30,9 +33,10 @@ public class AlexaSpeechlet implements Speechlet {
                 try {
                     // ensure model has a handler. by default choose the session state handler
                     if (model.getHandler() == null) {
-                        model.setHandler(new AlexaSessionStateHandler(session));
+                        new AlexaSessionStateHandler(session).writeModel(model.getModel());
+                    } else {
+                        model.saveState();
                     }
-                    model.saveState();
                 } catch (final AlexaStateException e) {
                     LOG.error("Error while saving state of a model.", e);
                 }
@@ -48,6 +52,6 @@ public class AlexaSpeechlet implements Speechlet {
 
     @Override
     public void onSessionEnded(final SessionEndedRequest request, final Session session) throws SpeechletException {
-
+        LOG.debug("Session has ended.");
     }
 }

@@ -35,11 +35,11 @@ public enum AlexaOutputFormat {
     }
 
     public String getSsml(final Object text) {
+        if (text instanceof LocalDateTime) {
+            return getSsmlLocalDate((LocalDateTime)text);
+        }
         if (text instanceof Date)
             return getSsmlDate((Date)text);
-        if (text instanceof LocalDateTime) {
-            return getSsmlDate((LocalDateTime)text);
-        }
         return String.format(ssmlTemplate, text);
     }
 
@@ -47,7 +47,7 @@ public enum AlexaOutputFormat {
         return String.format(ssmlTemplate, new SimpleDateFormat("yyyyMMdd").format(date));
     }
 
-    private String getSsmlDate(final LocalDateTime date) {
+    private String getSsmlLocalDate(final LocalDateTime date) {
         return String.format(ssmlTemplate, DateTimeFormatter.ofPattern("yyyyMMdd").format(date));
     }
 }

@@ -2,7 +2,6 @@ package io.klerch.alexa.tellask.util;
 
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.schema.UtteranceReader;
-import io.klerch.alexa.tellask.test.Test;
 import org.apache.commons.lang3.Validate;
 import org.yaml.snakeyaml.Yaml;
 
@@ -67,7 +66,7 @@ public class YamlReader {
      */
     private Stream<Object> flatten(final Object o) {
         if (o instanceof Map<?, ?>) {
-            return ((Map<?, ?>) o).values().stream().flatMap(Test::flatten);
+            return ((Map<?, ?>) o).values().stream().flatMap(this::flatten);
         }
         return Stream.of(o);
     }
