@@ -5,9 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
 public @interface AlexaIntentListener {
-    AlexaIntentType RequestType() default AlexaIntentType.INTENT_CUSTOM;
+    AlexaIntentType IntentType() default AlexaIntentType.INTENT_CUSTOM;
     String IntentName() default "";
 }

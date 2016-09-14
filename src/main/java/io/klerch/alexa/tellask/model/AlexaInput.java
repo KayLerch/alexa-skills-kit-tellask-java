@@ -18,7 +18,7 @@ public class AlexaInput {
         return sessionHandler;
     }
 
-    public SpeechletRequest getIntentRequest() {
+    public IntentRequest getIntentRequest() {
         return intentRequest;
     }
 }
