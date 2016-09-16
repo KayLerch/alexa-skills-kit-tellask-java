@@ -14,8 +14,6 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,10 +27,7 @@ import java.util.stream.Collectors;
 @SupportedAnnotationTypes("io.klerch.alexa.tellask.schema.AlexaIntentListener")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class AlexaIntentListenerProcessor extends AbstractProcessor {
-    private Types typeUtils;
-    private Elements elementUtils;
-    private Filer filer;
-    private Messager messager;
+    private ProcessingEnvironment processingEnv;
     private final List<String> intentsProcessed = new ArrayList<>();
 
     public AlexaIntentListenerProcessor() {}
@@ -40,10 +35,7 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        typeUtils = processingEnv.getTypeUtils();
-        elementUtils = processingEnv.getElementUtils();
-        filer = processingEnv.getFiler();
-        messager = processingEnv.getMessager();
+        this.processingEnv = processingEnv;
     }
 
     @Override
@@ -88,9 +80,9 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
         try {
             JavaFile.builder(AlexaIntentHandlerFactory.FACTORY_PACKAGE, alexaIntentHandlerFactory)
                     .build()
-                    .writeTo(filer);
+                    .writeTo(processingEnv.getFiler());
         } catch (final IOException e) {
-            this.messager.printMessage(Diagnostic.Kind.ERROR, "Could not generate factory caused by " + e.getMessage());
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Could not generate factory caused by " + e.getMessage());
             return false;
         }
         return true;
