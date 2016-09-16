@@ -2,8 +2,9 @@ package io.klerch.alexa.tellask.model;
 
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.Session;
-import com.amazon.speech.speechlet.SpeechletRequest;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
+
+import java.util.Optional;
 
 public class AlexaInput {
     private final AlexaSessionStateHandler sessionHandler;
@@ -20,5 +21,13 @@ public class AlexaInput {
 
     public IntentRequest getIntentRequest() {
         return intentRequest;
+    }
+
+    public boolean hasSlot(final String slotName) {
+        return intentRequest.getIntent().getSlots().containsKey(slotName);
+    }
+
+    public Optional<String> getSlotValue(final String slotName) {
+        return hasSlot(slotName) ? Optional.of(intentRequest.getIntent().getSlot(slotName).getValue()) : Optional.empty();
     }
 }

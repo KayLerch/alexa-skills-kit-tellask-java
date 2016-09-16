@@ -26,14 +26,16 @@ public class AlexaSpeechlet implements Speechlet {
 
     @Override
     public SpeechletResponse onIntent(final IntentRequest request, final Session session) throws SpeechletException {
-        LOG.debug("Intent appeared.");
+        AlexaSpeechletResponse response;
 
         final AlexaInput input = new AlexaInput(request, session);
+        final AlexaIntentHandler handler = AlexaIntentHandlerFactory.createHandler(input).orElse(null);
+
+        if (handler == null) {
+            throw new SpeechletException("Could not find a handler for intent '" + request.getIntent().getName() + "'");
+        }
+
         try {
-            final AlexaIntentHandler handler = AlexaIntentHandlerFactory.createHandler(input).orElse(null);
-
-            Validate.notNull(handler, "Could not find a handler for intent '" + request.getIntent().getName() + "'");
-
             final AlexaOutput output = handler.handleIntent(input);
             // save state of all models
             output.getModels().stream().forEach(model -> {
@@ -50,11 +52,12 @@ public class AlexaSpeechlet implements Speechlet {
             });
             // generate speechlet response from settings returned by the intent handler and
             // contents of YAML utterance file
-            return new AlexaSpeechletResponse(output);
-        } catch (final AlexaStateException e) {
+            response = new AlexaSpeechletResponse(output);
+        } catch (final Exception e) {
             LOG.error("Error while handling an intent.", e);
+            response = new AlexaSpeechletResponse(handler.handleError(input, e));
         }
-        return null;
+        return response;
     }
 
     @Override

@@ -6,4 +6,5 @@ import io.klerch.alexa.tellask.model.AlexaInput;
 
 public interface AlexaIntentHandler {
     AlexaOutput handleIntent(final AlexaInput request) throws AlexaStateException;
+    AlexaOutput handleError(final AlexaInput request, final Throwable exception);
 }
