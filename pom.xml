@@ -9,7 +9,9 @@
     <version>0.0.1</version>
 
     <name>Alexa Skills Kit Tellask SDK for Java</name>
-    <description>This SDK is an extension to the Alexa Skills SDK for Java. It provides a framework for handling speechlet requests with multi-variant utterances organized in YAML files.</description>
+    <description>This SDK is an extension to the Alexa Skills SDK for Java. It provides a framework for handling
+        speechlet requests with multi-variant utterances organized in YAML files.
+    </description>
 
     <developers>
         <developer>
@@ -24,32 +26,27 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven.surefire.failsafe.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.5.1</version>
                     <configuration>
-                        <properties>
-                            <property>
-                                <name>listener</name>
-                                <value>org.sonar.java.jacoco.JUnitListener</value>
-                            </property>
-                        </properties>
+                        <source>1.8</source>
+                        <target>1.8</target>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.7.201606060606</version>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.failsafe.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>org.sonar.java.jacoco.JUnitListener</value>
+                        </property>
+                    </properties>
                 </configuration>
             </plugin>
             <plugin>
@@ -60,6 +57,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.7.201606060606</version>
                 <configuration>
                     <append>true</append>
                 </configuration>

@@ -4,7 +4,11 @@ import com.amazon.speech.speechlet.*;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
+import io.klerch.alexa.tellask.util.AlexaIntentHandlerFactory;
+import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 public class AlexaSpeechlet implements Speechlet {
     private final Logger LOG = Logger.getLogger(AlexaSpeechlet.class);
@@ -25,8 +29,11 @@ public class AlexaSpeechlet implements Speechlet {
         LOG.debug("Intent appeared.");
 
         final AlexaInput input = new AlexaInput(request, session);
-        final AlexaIntentHandler handler = AlexaIntentHandlerFactory.createHandler(input);
         try {
+            final AlexaIntentHandler handler = AlexaIntentHandlerFactory.createHandler(input).orElse(null);
+
+            Validate.notNull(handler, "Could not find a handler for intent '" + request.getIntent().getName() + "'");
+
             final AlexaOutput output = handler.handleIntent(input);
             // save state of all models
             output.getModels().stream().forEach(model -> {
