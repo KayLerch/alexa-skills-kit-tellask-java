@@ -5,10 +5,7 @@ import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
 import io.klerch.alexa.tellask.util.AlexaIntentHandlerFactory;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
-
-import java.io.IOException;
 
 public class AlexaSpeechlet implements Speechlet {
     private final Logger LOG = Logger.getLogger(AlexaSpeechlet.class);

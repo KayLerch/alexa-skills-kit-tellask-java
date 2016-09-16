@@ -27,7 +27,8 @@ public class AlexaInput {
         return intentRequest.getIntent().getSlots().containsKey(slotName);
     }
 
-    public Optional<String> getSlotValue(final String slotName) {
-        return hasSlot(slotName) ? Optional.of(intentRequest.getIntent().getSlot(slotName).getValue()) : Optional.empty();
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> getSlotValueAs(Class<T> slotValueType, final String slotName) {
+        return hasSlot(slotName) ? Optional.of((T)intentRequest.getIntent().getSlot(slotName).getValue()) : Optional.empty();
     }
 }
