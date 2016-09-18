@@ -23,7 +23,7 @@ public class AlexaIntentHandlerFactory {
             final Object handler = method.invoke(null, input);
             return handler != null ? Optional.of((AlexaIntentHandler)handler) : Optional.empty();
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            LOG.error("Could not access generated factory to obtain intent handler.", e);
+            LOG.error("Could not access generated factory to obtain intent handlers. Maybe there is no valid intent handler in your project at all.", e);
             return Optional.empty();
         }
     }
