@@ -10,6 +10,13 @@ public enum AlexaIntentType {
     INTENT_CANCEL("AMAZON.CancelIntent"),
     INTENT_STOP("AMAZON.StopIntent"),
     INTENT_YES("AMAZON.YesIntent"),
+    INTENT_LOOP_OFF("AMAZON.LoopOffIntent"),
+    INTENT_LOOP_ON("AMAZON.LoopOnIntent"),
+    INTENT_PAUSE("AMAZON.PauseIntent"),
+    INTENT_PREVIOUS("AMAZON.PreviousIntent"),
+    INTENT_RESUME("AMAZON.ResumeIntent"),
+    INTENT_SHUFFLE_OFF("AMAZON.ShuffleOffIntent"),
+    INTENT_SHUFFLE_ON("AMAZON.ShuffleOnIntent"),
     INTENT_CUSTOM("");
 
     private String name;

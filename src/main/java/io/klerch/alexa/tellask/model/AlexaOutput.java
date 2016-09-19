@@ -89,26 +89,26 @@ public class AlexaOutput {
             this.intentName = intentName;
         }
 
-        public AlexaResponseBuilder withSlot(final String slotName, final Object slotValue) {
+        public AlexaResponseBuilder putSlot(final String slotName, final Object slotValue) {
             slots.add(new AlexaOutputSlot(slotName, slotValue));
             return this;
         }
 
-        public AlexaResponseBuilder withSlot(final String slotName, final Object slotValue, final AlexaOutputFormat slotFormat) {
+        public AlexaResponseBuilder putSlot(final String slotName, final Object slotValue, final AlexaOutputFormat slotFormat) {
             slots.add(new AlexaOutputSlot(slotName, slotValue).formatAs(slotFormat));
             return this;
         }
 
-        public AlexaResponseBuilder withSlot(final AlexaOutputSlot slot) {
+        public AlexaResponseBuilder putSlot(final AlexaOutputSlot slot) {
             slots.add(slot);
             return this;
         }
 
-        public AlexaResponseBuilder withState(final AlexaStateModel... models) {
+        public AlexaResponseBuilder putState(final AlexaStateModel... models) {
             return withDeduplicatedStateOf(Arrays.asList(models));
         }
 
-        public AlexaResponseBuilder withState(final Collection<AlexaStateModel> models) {
+        public AlexaResponseBuilder putState(final Collection<AlexaStateModel> models) {
             return withDeduplicatedStateOf(models);
         }
 

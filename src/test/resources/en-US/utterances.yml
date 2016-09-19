@@ -38,6 +38,6 @@ IntentWithOneUtteranceAndOneReprompt:
     - "This is a reprompt {name} with your score of {credits}"
 
 IntentWithInstantUtterance:
-  - "Hello {name}. Your current score is {credits} This is awesome"
+  - "Hello there {name}. Your current score is {credits} This is awesome"
   - "Welcome {name}. You got a score of {credits} You are awesome"
   - "Nice to meet you <p>{name}</p>. You got a score of {credits} That's fantastic"

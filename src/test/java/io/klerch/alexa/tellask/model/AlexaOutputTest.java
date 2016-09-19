@@ -48,7 +48,7 @@ public class AlexaOutputTest {
     @Test
     public void getModels() throws Exception {
         final AlexaStateModelSample model = new AlexaStateModelSample();
-        final AlexaOutput output = AlexaOutput.ask("intentName").withState(model).build();
+        final AlexaOutput output = AlexaOutput.ask("intentName").putState(model).build();
         Assert.assertNotNull(output.getModels());
         Assert.assertTrue(output.getModels().stream().anyMatch(m -> m.getModel().equals(model)));
     }
@@ -56,7 +56,7 @@ public class AlexaOutputTest {
     @Test
     public void getModelsWithDuplicate() throws Exception {
         final AlexaStateModelSample model = new AlexaStateModelSample();
-        final AlexaOutput output = AlexaOutput.ask("intentName").withState(model, model).build();
+        final AlexaOutput output = AlexaOutput.ask("intentName").putState(model, model).build();
         Assert.assertNotNull(output.getModels());
         Assert.assertThat(output.getModels().size(), Is.is(1));
         Assert.assertTrue(output.getModels().stream().anyMatch(m -> m.getModel().equals(model)));
@@ -68,7 +68,7 @@ public class AlexaOutputTest {
         final AlexaStateModelSample model2 = new AlexaStateModelSample();
         final List<AlexaStateModel> models = Arrays.asList(model, model2, model);
 
-        final AlexaOutput output = AlexaOutput.ask("intentName").withState(models).build();
+        final AlexaOutput output = AlexaOutput.ask("intentName").putState(models).build();
         Assert.assertNotNull(output.getModels());
         Assert.assertThat(output.getModels().size(), Is.is(2));
         Assert.assertTrue(output.getModels().stream().anyMatch(m -> m.getModel().equals(model)));
@@ -78,15 +78,15 @@ public class AlexaOutputTest {
     @Test
     public void getSlots() throws Exception {
         final AlexaOutputSlot slot = new AlexaOutputSlot("name", "value");
-        final AlexaOutput output = AlexaOutput.ask("intentName").withSlot(slot).build();
+        final AlexaOutput output = AlexaOutput.ask("intentName").putSlot(slot).build();
         Assert.assertNotNull(output.getSlots());
         Assert.assertTrue(output.getSlots().contains(slot));
 
-        final AlexaOutput output2 = AlexaOutput.ask("intentName").withSlot("slotName", "slotValue").build();
+        final AlexaOutput output2 = AlexaOutput.ask("intentName").putSlot("slotName", "slotValue").build();
         Assert.assertNotNull(output2.getSlots());
         Assert.assertTrue(output2.getSlots().stream().anyMatch(s -> s.getName().equals("slotName") && s.getValue().equals("slotValue")));
 
-        final AlexaOutput output3 = AlexaOutput.ask("intentName").withSlot("slotName", "slotValue", AlexaOutputFormat.DIGITS).build();
+        final AlexaOutput output3 = AlexaOutput.ask("intentName").putSlot("slotName", "slotValue", AlexaOutputFormat.DIGITS).build();
         Assert.assertNotNull(output3.getSlots());
         Assert.assertTrue(output3.getSlots().stream()
                 .anyMatch(s -> s.getName().equals("slotName") && s.getValue().equals("slotValue") && s.getFormatAs().equals(AlexaOutputFormat.DIGITS)));

@@ -92,12 +92,7 @@ public class YamlReader {
             // group node assumed to be an array list
             Object assumedUtteranceCollection = contents.get(index);
 
-            // if utterances (not reprompts) are desired and YAML node(s) are Strings then
-            // there's no container-node like "utterances:" but instant enumeration of utterances
-            if (index == 0 && assumedUtteranceCollection instanceof String) {
-                utterances.addAll(contents.stream().map(String::valueOf).collect(Collectors.toList()));
-            }
-            else if (assumedUtteranceCollection instanceof ArrayList) {
+            if (assumedUtteranceCollection instanceof ArrayList) {
                 // parse each phrase as string and add to return collection
                 ((ArrayList)assumedUtteranceCollection).forEach(utterance -> utterances.add(String.valueOf(utterance)));
             }

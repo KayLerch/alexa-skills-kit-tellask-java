@@ -20,8 +20,8 @@ public class AlexaSpeechletResponseTest {
 
         final AlexaOutput output = AlexaOutput
                 .ask("IntentWithOneUtteranceAndOneReprompt")
-                .withSlot("credits", 123, AlexaOutputFormat.NUMBER)
-                .withState(model).build();
+                .putSlot("credits", 123, AlexaOutputFormat.NUMBER)
+                .putState(model).build();
 
         final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output);
         Assert.assertEquals(output, response.getOutput());
