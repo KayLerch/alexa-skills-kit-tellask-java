@@ -2,11 +2,9 @@ package io.klerch.alexa.tellask.compile;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.*;
-import io.klerch.alexa.tellask.model.AlexaInput;
-import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
-import io.klerch.alexa.tellask.schema.AlexaIntentListener;
-import io.klerch.alexa.tellask.schema.AlexaIntentType;
-import io.klerch.alexa.tellask.util.AlexaIntentHandlerFactory;
+import io.klerch.alexa.tellask.schema.AlexaLaunchHandler;
+import io.klerch.alexa.tellask.schema.AlexaLaunchListener;
+import io.klerch.alexa.tellask.util.AlexaLaunchHandlerFactory;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -17,22 +15,24 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class AlexaIntentListenerProcessor extends AbstractProcessor {
+public class AlexaLaunchListenerProcessor extends AbstractProcessor {
     private ProcessingEnvironment processingEnv;
 
-    public AlexaIntentListenerProcessor() {
+    public AlexaLaunchListenerProcessor() {
     }
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return Collections.singletonList(AlexaIntentListener.class.getTypeName()).stream().collect(Collectors.toSet());
+        return Collections.singletonList(AlexaLaunchListener.class.getTypeName()).stream().collect(Collectors.toSet());
     }
 
     @Override
@@ -45,45 +45,44 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         if (roundEnv.processingOver()) return true;
 
-        final MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(AlexaIntentHandlerFactory.FACTORY_METHOD_NAME)
+        final MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(AlexaLaunchHandlerFactory.FACTORY_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(AlexaIntentHandler.class)
-                .addParameter(AlexaInput.class, "input");
+                .returns(AlexaLaunchHandler.class);
 
-        final List<CodeBlock> codeBlocks = roundEnv.getElementsAnnotatedWith(AlexaIntentListener.class).stream()
+        final List<CodeBlock> codeBlocks = roundEnv.getElementsAnnotatedWith(AlexaLaunchListener.class).stream()
                 // only interested in tagged classes
                 .filter(e -> e.getKind() == ElementKind.CLASS)
                 // cast as type
                 .map(e -> (TypeElement) e)
                 // must implement AlexaIntentHandler
-                .filter(implementsAlexaIntentHandler)
+                .filter(implementsAlexaLaunchHandler)
                 // must match certain criteria like being public and not abstract
                 .filter(isConcretePublicClass)
                 // must also have a public default constructor
                 .filter(hasDefaultConstructor)
-                // sort descending by priority (important for multiple intent-handlers for same intent)
-                .sorted(byPriority)
-                // process for all valid classes having the AlexaIntentListener-annotation
+                // process for all valid classes having the AlexaLaunchListener-annotation
                 .map(generateCode)
                 // to list
                 .collect(Collectors.toList());
 
         if (codeBlocks.isEmpty()) {
             return true;
-        } else {
-            codeBlocks.forEach(methodBuilder::addCode);
+        } else if (codeBlocks.size() > 1) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "There is more than one class annotated with " + AlexaLaunchListener.class.getSimpleName() + ". Only one of them will be considered.");
         }
 
-        // add one last lines which returns null in case of no intenthandler found
-        final MethodSpec method = methodBuilder.addCode("return null;").build();
+        // add only the first
+        methodBuilder.addCode(codeBlocks.get(0));
 
-        final TypeSpec alexaIntentHandlerFactory = TypeSpec.classBuilder(AlexaIntentHandlerFactory.FACTORY_CLASS_NAME)
+        final MethodSpec method = methodBuilder.build();
+
+        final TypeSpec alexaIntentHandlerFactory = TypeSpec.classBuilder(AlexaLaunchHandlerFactory.FACTORY_CLASS_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addMethod(method)
                 .build();
 
         try {
-            JavaFile.builder(AlexaIntentHandlerFactory.FACTORY_PACKAGE, alexaIntentHandlerFactory)
+            JavaFile.builder(AlexaLaunchHandlerFactory.FACTORY_PACKAGE, alexaIntentHandlerFactory)
                     .build()
                     .writeTo(processingEnv.getFiler());
         } catch (final IOException e) {
@@ -94,21 +93,8 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
     }
 
     private Function<TypeElement, CodeBlock> generateCode = (final TypeElement element) -> {
-        // the intent type comes from the annotation
-        final AlexaIntentType intentType = element.getAnnotation(AlexaIntentListener.class).IntentType();
-
-        // do only consider intent name if custom intent set, otherwise pick name coming from enum
-        final String intentName = AlexaIntentType.INTENT_CUSTOM.equals(intentType) ?
-                element.getAnnotation(AlexaIntentListener.class).IntentName() : intentType.getName();
-
         final ClassName handlerClass = ClassName.get(element);
-
-        // an if-statement checks for the intent-name and returns an instance of the corresponding handler
-        return CodeBlock.of("if($S.equals(input.getIntentName()))" +
-                "{" +
-                "final AlexaIntentHandler handler = new $T();" +
-                "if (handler.shouldHandle(input)) return handler;" +
-                "}", intentName, handlerClass);
+        return CodeBlock.of("return new $T();", handlerClass);
     };
 
     private Predicate<TypeElement> isConcretePublicClass = (final TypeElement t) -> {
@@ -117,19 +103,18 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
 
         if (!condition) {
             final ClassName handlerClass = ClassName.get(t);
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaIntentListener.class.getSimpleName() + " but is abstract or not public. It won't be considered for handling intents.");
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but is abstract or not public. It won't be considered for handling intents.");
         }
         return condition;
     };
 
-
-    private Predicate<TypeElement> implementsAlexaIntentHandler = (final TypeElement t) -> {
-        final TypeMirror alexaHandler = processingEnv.getElementUtils().getTypeElement(AlexaIntentHandler.class.getTypeName()).asType();
+    private Predicate<TypeElement> implementsAlexaLaunchHandler = (final TypeElement t) -> {
+        final TypeMirror alexaHandler = processingEnv.getElementUtils().getTypeElement(AlexaLaunchHandler.class.getTypeName()).asType();
         final boolean condition = processingEnv.getTypeUtils().isAssignable(t.asType(), alexaHandler);
 
         if (!condition) {
             final ClassName handlerClass = ClassName.get(t);
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaIntentListener.class.getSimpleName() + " but does not implement " + AlexaIntentHandler.class.getSimpleName() + ". It won't be considered for handling intents.");
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but does not implement " + AlexaLaunchHandler.class.getSimpleName() + ". It won't be considered for handling intents.");
         }
         return condition;
     };
@@ -148,11 +133,8 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
 
         if (!condition) {
             final ClassName handlerClass = ClassName.get(t);
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaIntentListener.class.getSimpleName() + " but does not contain a public default constructor. It won't be considered for handling intents.");
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but does not contain a public default constructor. It won't be considered for handling intents.");
         }
         return condition;
     };
-
-    private Comparator<TypeElement> byPriority = (o1, o2) -> o2.getAnnotation(AlexaIntentListener.class).Priority() -
-            o1.getAnnotation(AlexaIntentListener.class).Priority();
 }

@@ -1,7 +1,9 @@
 package io.klerch.alexa.tellask.model;
 
 import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Session;
+import com.amazon.speech.speechlet.SpeechletRequest;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class AlexaInput {
     private final AlexaSessionStateHandler sessionHandler;
     private final IntentRequest intentRequest;
+    private final LaunchRequest launchRequest;
     private final String locale;
 
     /**
@@ -27,7 +30,25 @@ public class AlexaInput {
     public AlexaInput(final IntentRequest request, final Session session, final String locale) {
         this.sessionHandler = new AlexaSessionStateHandler(session);
         this.intentRequest = request;
+        this.launchRequest = null;
         this.locale = locale;
+    }
+
+    /**
+     * Creates a new Alexa input giving it all information from an actual Speechlet request
+     * @param request the intent request
+     * @param session the session object
+     * @param locale the locale of the request
+     */
+    public AlexaInput(final LaunchRequest request, final Session session, final String locale) {
+        this.sessionHandler = new AlexaSessionStateHandler(session);
+        this.intentRequest = null;
+        this.launchRequest = request;
+        this.locale = locale;
+    }
+
+    public String getIntentName() {
+        return intentRequest != null ? intentRequest.getIntent().getName() : null;
     }
 
     /**
@@ -39,11 +60,11 @@ public class AlexaInput {
     }
 
     /**
-     * The intent request to handle. It contains (if provided) slots with values.
-     * @return The intent request.
+     * The speechlet request to handle. This should be either an intent request or launch request
+     * @return The speechlet request.
      */
-    public IntentRequest getIntentRequest() {
-        return intentRequest;
+    public SpeechletRequest getRequest() {
+        return intentRequest != null ? intentRequest : launchRequest;
     }
 
 
@@ -62,7 +83,7 @@ public class AlexaInput {
      * @return True, if the slot exists in the intent request
      */
     public boolean hasSlot(final String slotName) {
-        return intentRequest.getIntent().getSlots().containsKey(slotName);
+        return intentRequest != null && intentRequest.getIntent().getSlots().containsKey(slotName);
     }
 
     /**

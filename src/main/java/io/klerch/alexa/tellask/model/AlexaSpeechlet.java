@@ -1,10 +1,12 @@
 package io.klerch.alexa.tellask.model;
 
 import com.amazon.speech.speechlet.*;
-import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
+import io.klerch.alexa.tellask.schema.AlexaLaunchHandler;
+import io.klerch.alexa.tellask.schema.AlexaRequestHandler;
 import io.klerch.alexa.tellask.util.AlexaIntentHandlerFactory;
+import io.klerch.alexa.tellask.util.AlexaLaunchHandlerFactory;
 import org.apache.log4j.Logger;
 
 public class AlexaSpeechlet implements Speechlet {
@@ -22,29 +24,38 @@ public class AlexaSpeechlet implements Speechlet {
 
     @Override
     public SpeechletResponse onLaunch(final LaunchRequest request, final Session session) throws SpeechletException {
-        LOG.debug("Session has launched.");
-        return null;
+        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final AlexaLaunchHandler handler = AlexaLaunchHandlerFactory.createHandler().orElse(null);
+        return handleRequest(input, handler);
     }
 
     @Override
     public SpeechletResponse onIntent(final IntentRequest request, final Session session) throws SpeechletException {
-        AlexaSpeechletResponse response;
-
         final AlexaInput input = new AlexaInput(request, session, LOCALE);
         final AlexaIntentHandler handler = AlexaIntentHandlerFactory.createHandler(input).orElse(null);
+        return handleRequest(input, handler);
+    }
+
+    @Override
+    public void onSessionEnded(final SessionEndedRequest request, final Session session) throws SpeechletException {
+        LOG.debug("Session has ended.");
+    }
+
+    private AlexaSpeechletResponse handleRequest(final AlexaInput input, final AlexaRequestHandler handler) throws SpeechletException {
+        AlexaSpeechletResponse response;
 
         if (handler == null) {
-            throw new SpeechletException("Could not find a handler for intent '" + request.getIntent().getName() + "'");
+            throw new SpeechletException("Could not find a handler for speechlet request");
         }
 
         try {
-            final AlexaOutput output = handler.handleIntent(input);
+            final AlexaOutput output = handler.handleRequest(input);
             // save state of all models
             output.getModels().stream().forEach(model -> {
                 try {
                     // ensure model has a handler. by default choose the session state handler
                     if (model.getHandler() == null) {
-                        new AlexaSessionStateHandler(session).writeModel(model.getModel());
+                        input.getSessionHandler().writeModel(model.getModel());
                     } else {
                         model.saveState();
                     }
@@ -60,10 +71,5 @@ public class AlexaSpeechlet implements Speechlet {
             response = new AlexaSpeechletResponse(handler.handleError(input, e));
         }
         return response;
-    }
-
-    @Override
-    public void onSessionEnded(final SessionEndedRequest request, final Session session) throws SpeechletException {
-        LOG.debug("Session has ended.");
     }
 }

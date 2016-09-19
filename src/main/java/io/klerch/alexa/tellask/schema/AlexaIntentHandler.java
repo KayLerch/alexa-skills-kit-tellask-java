@@ -1,13 +1,12 @@
 package io.klerch.alexa.tellask.schema;
 
-import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.model.AlexaInput;
 
 /**
  * An interface for an intent handler. The handler will only be considered to handle an intent
  * by tagging the implementation class with the AlexaIntentListener-annotation.
  */
-public interface AlexaIntentHandler {
+public interface AlexaIntentHandler extends AlexaRequestHandler {
     /**
      * This method verifies an input should be handled by this handler. In case you have
      * more handlers for the same intent you can distinguish between them by checking the
@@ -19,21 +18,4 @@ public interface AlexaIntentHandler {
      * @return true if this handler should handle the request with its handleIntent method.
      */
     boolean shouldHandle(final AlexaInput input);
-
-    /**
-     * This method handles an incoming intent defined in the AlexaIntentListener annotation
-     * of the class derived from this interface.
-     * @param input Alexa input request
-     * @return Alexa output response
-     * @throws Exception Can throw an exception which triggers the handleError method
-     */
-    AlexaOutput handleIntent(final AlexaInput input) throws Exception;
-
-    /**
-     * This method handles a failed handling of an intent.
-     * @param input The original Alexa input whose handling failed
-     * @param exception The exception which caused the failure (likely be thrown by the handleIntent)
-     * @return Alexa output response
-     */
-    AlexaOutput handleError(final AlexaInput input, final Throwable exception);
 }

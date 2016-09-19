@@ -1,10 +1,7 @@
 package io.klerch.alexa.tellask;
 
 import com.amazon.speech.slu.Intent;
-import com.amazon.speech.speechlet.Application;
-import com.amazon.speech.speechlet.IntentRequest;
-import com.amazon.speech.speechlet.Session;
-import com.amazon.speech.speechlet.User;
+import com.amazon.speech.speechlet.*;
 import io.klerch.alexa.tellask.model.AlexaOutput;
 
 import java.util.Date;
@@ -23,6 +20,13 @@ public class ModelFactory {
                 .withRequestId("requestId")
                 .withTimestamp(new Date())
                 .withIntent(intent)
+                .build();
+    }
+
+    public static LaunchRequest givenLaunchRequest() {
+        return LaunchRequest.builder()
+                .withRequestId("requestId")
+                .withTimestamp(new Date())
                 .build();
     }
 
