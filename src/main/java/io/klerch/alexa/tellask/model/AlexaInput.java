@@ -114,15 +114,20 @@ public class AlexaInput {
         return hasSlot(slotName) && BooleanUtils.toBoolean(intentRequest.getIntent().getSlot(slotName).getValue());
     }
 
+    public String getSlotValue(final String slotName) {
+        return hasSlot(slotName) ? intentRequest.getIntent().getSlot(slotName).getValue() : null;
+    }
+
     /**
-     * Gets a slot's value casted to the given type or returns nothing if slot is not existent.
+     * Gets a slot's value casted to the given type or returns null if slot is not existent.
      * @param slotValueType Class of a type to cast slot value to
      * @param slotName name of the slot to look after
      * @param <T> Type to cast slot value to
      * @return Typed value of the slot
      */
     @SuppressWarnings("unchecked")
-    public <T> Optional<T> getSlotValueAs(Class<T> slotValueType, final String slotName) {
-        return hasSlot(slotName) ? Optional.of((T)intentRequest.getIntent().getSlot(slotName).getValue()) : Optional.empty();
+    public <T> T getSlotValueAs(Class<T> slotValueType, final String slotName) {
+        final String slotValue = getSlotValue(slotName);
+        return slotValue != null ? (T)slotValue : null;
     }
 }
