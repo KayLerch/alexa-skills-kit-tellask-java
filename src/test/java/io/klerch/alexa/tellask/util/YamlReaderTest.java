@@ -17,10 +17,12 @@ public class YamlReaderTest {
     private final String intentWithEmptyReprompts = "IntentWithEmptyReprompts";
     private final String intentWithoutAny = "IntentWithoutAny";
     private final String intentWithEmptyUtterance = "IntentWithEmptyUtterance";
+    private final String intentWithInstantUtterance = "IntentWithInstantUtterance";
+    private final String locale = "en-US";
 
     @Before
     public void init() throws Exception {
-        reader = new YamlReader(new ResourceUtteranceReader());
+        reader = new YamlReader(new ResourceUtteranceReader(), locale);
     }
 
     @Test
@@ -51,6 +53,11 @@ public class YamlReaderTest {
     @Test
     public void testWithIntentWithEmptyUtterance() throws Exception {
         testIntent(intentWithEmptyUtterance, 0, 0);
+    }
+
+    @Test
+    public void testWithIntentWithInstantUtterance() throws Exception {
+        testIntent(intentWithInstantUtterance, 3, 0);
     }
 
     private void testIntent(final String intent, final int expectedIntentPhrases, final int expectedRepromptPhrases) {

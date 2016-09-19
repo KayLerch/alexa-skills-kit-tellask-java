@@ -10,11 +10,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class YamlReader {
-    final UtteranceReader utteranceReader;
-    final Map<String, List<Object>> phrases = new HashMap<>();
+    private final UtteranceReader utteranceReader;
+    private final Map<String, List<Object>> phrases = new HashMap<>();
+    private final String locale;
 
-    public YamlReader(final UtteranceReader utteranceReader) {
+    public YamlReader(final UtteranceReader utteranceReader, final String locale) {
         this.utteranceReader = utteranceReader;
+        this.locale = locale;
     }
 
     public List<String> getUtterances(final AlexaOutput output) {
@@ -51,7 +53,7 @@ public class YamlReader {
 
     private List<Object> loadUtterances(final String intentName) {
         // leverage reader to get yaml with utterances
-        final Map<?, ?> content = new Yaml().loadAs(utteranceReader.read(), Map.class);
+        final Map<?, ?> content = new Yaml().loadAs(utteranceReader.read(locale), Map.class);
 
         // flatten yaml strings values beneath intent node of interest
         return content.entrySet().stream()
@@ -89,7 +91,13 @@ public class YamlReader {
         if (contents.size() > index) {
             // group node assumed to be an array list
             Object assumedUtteranceCollection = contents.get(index);
-            if (assumedUtteranceCollection instanceof ArrayList) {
+
+            // if utterances (not reprompts) are desired and YAML node(s) are Strings then
+            // there's no container-node like "utterances:" but instant enumeration of utterances
+            if (index == 0 && assumedUtteranceCollection instanceof String) {
+                utterances.addAll(contents.stream().map(String::valueOf).collect(Collectors.toList()));
+            }
+            else if (assumedUtteranceCollection instanceof ArrayList) {
                 // parse each phrase as string and add to return collection
                 ((ArrayList)assumedUtteranceCollection).forEach(utterance -> utterances.add(String.valueOf(utterance)));
             }

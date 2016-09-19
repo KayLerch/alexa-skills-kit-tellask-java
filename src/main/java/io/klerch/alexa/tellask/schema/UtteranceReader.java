@@ -8,5 +8,5 @@ public interface UtteranceReader {
     String getResourceLocation();
     void setResourceLocation(final String resourceLocation);
     ResourceUtteranceReader fromResourceLocation(final String resourceLocation);
-    InputStream read();
+    InputStream read(final String locale);
 }

@@ -1,0 +1,38 @@
+IntentWithReprompts:
+  Utterances:
+    - "Hallo {name}. Dein Punktestand ist {credits} Einfach großartig."
+    - "Willkommen {name}. Du hast einen Punktestand von {credits} Du bist toll."
+    - "Es war mir ein Vergnügen, <p>{name}</p>. Dein Punktestand beträgt {credits} Fantastisch."
+  Reprompts:
+    - "Reprompt"
+    - "Reprompt2"
+
+IntentWithoutReprompts:
+  Utterances:
+    - "Hallo {name}. Dein Punktestand ist {credits} Einfach großartig."
+    - "Willkommen {name}. Du hast einen Punktestand von {credits} Du bist toll."
+    - "Es war mir ein Vergnügen, <p>{name}</p>. Dein Punktestand beträgt {credits} Fantastisch."
+
+IntentWithEmptyReprompts:
+  Utterances:
+    - "Hallo {name}. Dein Punktestand ist {credits} Einfach großartig."
+    - "Willkommen {name}. Du hast einen Punktestand von {credits} Du bist toll."
+    - "Es war mir ein Vergnügen, <p>{name}</p>. Dein Punktestand beträgt {credits} Fantastisch."
+  Reprompts:
+
+IntentWithoutAny:
+
+IntentWithEmptyUtterance:
+  Utterances:
+
+IntentWithNoSlots:
+  Utterances:
+    - "Hallo"
+  Reprompts:
+    - "Willkommen zurück"
+
+IntentWithOneUtteranceAndOneReprompt:
+  Utterances:
+    - "Hallo {name}. Dein Punktestand ist {credits}."
+  Reprompts:
+    - "Das ist eine erneute Aufforderung für {name} mit einem Punktestand von {credits}"

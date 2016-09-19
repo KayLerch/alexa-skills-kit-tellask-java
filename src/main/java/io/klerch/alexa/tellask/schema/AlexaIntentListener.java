@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface AlexaIntentListener {
     AlexaIntentType IntentType() default AlexaIntentType.INTENT_CUSTOM;
     String IntentName() default "";
+    int Priority() default 0;
 }

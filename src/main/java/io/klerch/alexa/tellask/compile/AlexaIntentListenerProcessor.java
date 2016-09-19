@@ -7,7 +7,6 @@ import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
 import io.klerch.alexa.tellask.schema.AlexaIntentListener;
 import io.klerch.alexa.tellask.schema.AlexaIntentType;
 import io.klerch.alexa.tellask.util.AlexaIntentHandlerFactory;
-import org.apache.commons.lang3.Validate;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -18,21 +17,22 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
-@SupportedAnnotationTypes("io.klerch.alexa.tellask.schema.AlexaIntentListener")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class AlexaIntentListenerProcessor extends AbstractProcessor {
     private ProcessingEnvironment processingEnv;
-    private final List<String> intentsProcessed = new ArrayList<>();
 
     public AlexaIntentListenerProcessor() {
+    }
+
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        return Collections.singletonList(AlexaIntentListener.class.getTypeName()).stream().collect(Collectors.toSet());
     }
 
     @Override
@@ -61,7 +61,9 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
                 .filter(isConcretePublicClass)
                 // must also have a public default constructor
                 .filter(hasDefaultConstructor)
-                // process for all valid classes having the Listener-annotation
+                // sort descending by priority (important for multiple intent-handlers for same intent)
+                .sorted(byPriority)
+                // process for all valid classes having the AlexaIntentListener-annotation
                 .map(generateCode)
                 // to list
                 .collect(Collectors.toList());
@@ -101,14 +103,11 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
 
         final ClassName handlerClass = ClassName.get(element);
 
-        Validate.isTrue(!intentsProcessed.contains(intentName), "There's another intent handler for intent '" + intentName + "'. " + handlerClass.simpleName() + " won't be considered for handling intents.");
-
-        intentsProcessed.add(intentName);
-
         // an if-statement checks for the intent-name and returns an instance of the corresponding handler
         return CodeBlock.of("if($S.equals(input.getIntentRequest().getIntent().getName()))" +
                 "{" +
-                "return new $T();" +
+                "final AlexaIntentHandler handler = new $T();" +
+                "if (handler.shouldHandle(input)) return handler;" +
                 "}", intentName, handlerClass);
     };
 
@@ -137,10 +136,14 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
 
     private Predicate<TypeElement> hasDefaultConstructor = (final TypeElement t) -> {
         final boolean condition = t.getEnclosedElements().stream()
+                // for all constructors
                 .filter(e -> ElementKind.CONSTRUCTOR.equals(e.getKind()))
                 .map(e -> (ExecutableElement) e)
+                // check for parameterless methods
                 .filter(e -> e.getParameters().isEmpty())
+                // check for public methods
                 .filter(e -> e.getModifiers().contains(Modifier.PUBLIC))
+                // needs at least one constructor matching the above conditions
                 .findFirst().isPresent();
 
         if (!condition) {
@@ -149,4 +152,7 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
         }
         return condition;
     };
+
+    private Comparator<TypeElement> byPriority = (o1, o2) -> o2.getAnnotation(AlexaIntentListener.class).Priority() -
+            o1.getAnnotation(AlexaIntentListener.class).Priority();
 }

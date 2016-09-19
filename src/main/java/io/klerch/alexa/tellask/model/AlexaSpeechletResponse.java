@@ -22,7 +22,7 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
 
     public AlexaSpeechletResponse(final AlexaOutput output) {
         this.output = output;
-        this.yamlReader = new YamlReader(output.getUtteranceReader());
+        this.yamlReader = new YamlReader(output.getUtteranceReader(), output.getLocale());
         this.setShouldEndSession(output.shouldEndSession());
         this.setCard(output.getCard());
         this.outputSpeech = getOutputSpeech();

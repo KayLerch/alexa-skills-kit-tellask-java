@@ -7,11 +7,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class AlexaInputTest {
+    private static final String LOCALE = "en-US";
+
     @Test
     public void constructAndGetMembers() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest();
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session);
+        final AlexaInput input = new AlexaInput(request, session, LOCALE);
 
         Assert.assertEquals(request, input.getIntentRequest());
         Assert.assertNotNull(input.getSessionHandler());

@@ -21,6 +21,7 @@ public class AlexaOutput {
     private final List<AlexaOutputSlot> slots;
     private final Card card;
     private final UtteranceReader utteranceReader;
+    private final String locale;
 
     private AlexaOutput(final AlexaResponseBuilder builder) {
         this.intentName = builder.intentName;
@@ -30,6 +31,7 @@ public class AlexaOutput {
         this.card = builder.card;
         this.slots = builder.slots;
         this.utteranceReader = builder.utteranceReader;
+        this.locale = builder.locale;
     }
 
     public String getIntentName() {
@@ -60,6 +62,10 @@ public class AlexaOutput {
         return utteranceReader;
     }
 
+    public String getLocale() {
+        return locale;
+    }
+
     public static AlexaResponseBuilder tell(final String intentName) {
         return new AlexaResponseBuilder(true, intentName);
     }
@@ -76,6 +82,7 @@ public class AlexaOutput {
         private List<AlexaOutputSlot> slots = new ArrayList<>();
         private Card card;
         private UtteranceReader utteranceReader = new ResourceUtteranceReader();
+        private String locale = "en-US";
 
         private AlexaResponseBuilder(final Boolean shouldEndSession, final String intentName) {
             this.shouldEndSession = shouldEndSession;
@@ -103,6 +110,11 @@ public class AlexaOutput {
 
         public AlexaResponseBuilder withState(final Collection<AlexaStateModel> models) {
             return withDeduplicatedStateOf(models);
+        }
+
+        public AlexaResponseBuilder withLocale(final String locale) {
+            this.locale = locale;
+            return this;
         }
 
         private Predicate<AlexaStateModel> notExists = ((final AlexaStateModel model) ->
@@ -134,6 +146,7 @@ public class AlexaOutput {
         public AlexaOutput build() {
             Validate.notBlank(intentName, "Intent name must not be blank.");
             Validate.notNull(utteranceReader, "Utterance-reader must not be null.");
+            Validate.notBlank(locale, "Locale must not be blank.");
             return new AlexaOutput(this);
         }
     }

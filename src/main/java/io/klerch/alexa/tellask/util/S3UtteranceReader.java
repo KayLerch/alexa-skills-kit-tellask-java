@@ -44,10 +44,14 @@ public class S3UtteranceReader implements UtteranceReader {
     }
 
     @Override
-    public InputStream read() {
-        Validate.notBlank(resourceLocation);
-        final S3Object s3Object = s3Client.getObject(bucketName, bucketFolder + resourceLocation);
-        Validate.notNull(s3Object, "Resource " + resourceLocation + " does not exist in current context.");
+    public InputStream read(final String locale) {
+        Validate.notBlank(resourceLocation, "S3 resource location must not be blank");
+        Validate.notBlank(locale, "Locale must not be blank.");
+
+        final String resourcePath = bucketFolder + "/" + locale + resourceLocation;
+
+        final S3Object s3Object = s3Client.getObject(bucketName, resourcePath);
+        Validate.notNull(s3Object, "Resource " + resourcePath + " does not exist in bucket with name " + bucketName);
         return s3Object.getObjectContent();
     }
 }

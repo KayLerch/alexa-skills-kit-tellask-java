@@ -7,6 +7,8 @@ import io.klerch.alexa.tellask.model.AlexaInput;
  * An interface for an intent handler
  */
 public interface AlexaIntentHandler {
+    boolean shouldHandle(final AlexaInput input);
+
     /**
      * This method handles an incoming intent defined in the AlexaIntentListener annotation
      * of the class derived from this interface.

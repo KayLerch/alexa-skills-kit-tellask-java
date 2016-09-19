@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 
 public class ResourceUtteranceReaderTest {
     private ResourceUtteranceReader reader;
+    private static final String LOCALE = "en-US";
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -59,11 +60,11 @@ public class ResourceUtteranceReaderTest {
     @Test
     public void read() throws Exception {
         reader.setResourceLocation(reader.defaultResourceLocation);
-        Assert.assertNotNull(reader.read());
+        Assert.assertNotNull(reader.read(LOCALE));
 
         reader.setResourceLocation("this-file-does-not-exist.yml");
         exception.expect(NullPointerException.class);
-        reader.read();
+        reader.read(LOCALE);
     }
 
 }

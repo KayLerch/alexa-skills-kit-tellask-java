@@ -9,6 +9,11 @@ import org.apache.log4j.Logger;
 
 public class AlexaSpeechlet implements Speechlet {
     private final Logger LOG = Logger.getLogger(AlexaSpeechlet.class);
+    public final String LOCALE;
+
+    public AlexaSpeechlet(final String locale) {
+        this.LOCALE = locale;
+    }
 
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session) throws SpeechletException {
@@ -25,7 +30,7 @@ public class AlexaSpeechlet implements Speechlet {
     public SpeechletResponse onIntent(final IntentRequest request, final Session session) throws SpeechletException {
         AlexaSpeechletResponse response;
 
-        final AlexaInput input = new AlexaInput(request, session);
+        final AlexaInput input = new AlexaInput(request, session, LOCALE);
         final AlexaIntentHandler handler = AlexaIntentHandlerFactory.createHandler(input).orElse(null);
 
         if (handler == null) {

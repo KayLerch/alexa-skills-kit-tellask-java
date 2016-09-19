@@ -24,8 +24,14 @@ public class ResourceUtteranceReader implements UtteranceReader {
         return this;
     }
 
-    public InputStream read() {
-        Validate.notNull(ClassLoader.class.getResource(resourceLocation), "Resource " + resourceLocation + " does not exist in current context.");
-        return ClassLoader.class.getResourceAsStream(resourceLocation);
+    public InputStream read(final String locale) {
+        Validate.notBlank(locale, "Local must not be blank.");
+
+        final String resourcePath = defaultResourceLocation.equals(resourceLocation) ?
+                "/" + locale + defaultResourceLocation : resourceLocation;
+
+        Validate.notNull(ClassLoader.class.getResource(resourcePath), "Resource " + resourcePath + " does not exist in current context.");
+
+        return ClassLoader.class.getResourceAsStream(resourcePath);
     }
 }
