@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,8 +27,13 @@ public class AlexaRequestStreamHandler implements RequestStreamHandler {
     public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode parser = mapper.readTree(input);
-        // ...
-        final String locale = "en-US";
+        final String locale = Optional.of(parser.path("request"))
+                .filter(node -> !node.isMissingNode())
+                .map(node -> node.path("locale"))
+                .filter(node -> !node.isMissingNode())
+                .map(JsonNode::textValue)
+                .orElse("en-US");
+
         final AlexaSpeechlet speechlet = new AlexaSpeechlet(locale);
 
         final SpeechletRequestHandler handler = getRequestStreamHandler();

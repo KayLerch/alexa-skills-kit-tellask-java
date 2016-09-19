@@ -1,12 +1,16 @@
 package io.klerch.alexa.tellask.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.klerch.alexa.tellask.ModelFactory;
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class YamlReaderTest {
     private YamlReader reader;
@@ -74,8 +78,7 @@ public class YamlReaderTest {
         // getRandomUtteranceByIntentName
         if (expectedIntentPhrases > 0) {
             Assert.assertTrue(reader.getRandomUtterance(intent).isPresent());
-        }
-        else {
+        } else {
             Assert.assertFalse(reader.getRandomUtterance(intent).isPresent());
         }
 
@@ -98,16 +101,14 @@ public class YamlReaderTest {
         // getRandomRepromptByIntentName
         if (expectedRepromptPhrases > 0) {
             Assert.assertTrue(reader.getRandomReprompt(intent).isPresent());
-        }
-        else {
+        } else {
             Assert.assertFalse(reader.getRandomReprompt(intent).isPresent());
         }
 
         // getRandomRepromptByAlexaOutput
         if (expectedRepromptPhrases > 0) {
             Assert.assertTrue(reader.getRandomReprompt(ModelFactory.givenAlexaOutputWithIntent(intent)).isPresent());
-        }
-        else {
+        } else {
             Assert.assertFalse(reader.getRandomReprompt(ModelFactory.givenAlexaOutputWithIntent(intent)).isPresent());
         }
     }
