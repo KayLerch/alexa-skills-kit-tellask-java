@@ -8,5 +8,5 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 public @interface AlexaApplication {
     String[] ApplicationIds();
-    Class<AlexaSpeechlet> Speechlet() default AlexaSpeechlet.class;
+    Class<? extends AlexaSpeechlet> Speechlet() default AlexaSpeechlet.class;
 }
