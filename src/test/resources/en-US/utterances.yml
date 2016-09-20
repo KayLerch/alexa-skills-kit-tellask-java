@@ -1,8 +1,8 @@
 IntentWithReprompts:
   Utterances:
-    - "Hello {name}. Your current score is {credits} This is awesome"
-    - "Welcome {name}. You got a score of {credits} You are awesome"
-    - "Nice to meet you <p>{name}</p>. You got a score of {credits} That's fantastic"
+    - "[Hello|Hi|Welcome] {name}. [Your] current [score|credit] is {credits} This [] is [awesome|incredible|super]"
+    - "[Hello {name}|Hi {name}|Welcome {name}]. [You] got a [score|credit] of {credits} You [] are [awesome|incredible|super]"
+    - "Nice to [] meet you <p>{name}</p>. [You] got a [score|credit] of {credits} That's [awesome|incredible|super]"
   Reprompts:
     - "Reprompt"
     - "Reprompt2"

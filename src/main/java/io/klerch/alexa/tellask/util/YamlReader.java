@@ -90,7 +90,7 @@ public class YamlReader {
 
         if (contents.size() > index) {
             // group node assumed to be an array list
-            Object assumedUtteranceCollection = contents.get(index);
+            final Object assumedUtteranceCollection = contents.get(index);
 
             if (assumedUtteranceCollection instanceof ArrayList) {
                 // parse each phrase as string and add to return collection

@@ -9,9 +9,18 @@ import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * An extended version of the orginial speechlet response which makes it
+ * compatible with TellAsk SDK and the speechlet handler it provides. This
+ * object is capable of turning your AlexaOutput into a valid speechlet response.
+ */
 public class AlexaSpeechletResponse extends SpeechletResponse {
     private final Logger LOG = Logger.getLogger(AlexaSpeechletResponse.class);
 
@@ -20,6 +29,13 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
     private final OutputSpeech outputSpeech;
     private final Reprompt reprompt;
 
+    /**
+     * A speechlet response is generated from an AlexaOutput object which should
+     * contain all the information necessary to get access to a set of utterances
+     * (over the utterance reader) from which it picks randomly according to the
+     * intent name also given by the AlexaOutput.
+     * @param output the AlexaOutput
+     */
     public AlexaSpeechletResponse(final AlexaOutput output) {
         this.output = output;
         this.yamlReader = new YamlReader(output.getUtteranceReader(), output.getLocale());
@@ -42,10 +58,18 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         }
     }
 
+    /**
+     * The AlexaOutput used to generate the speechlet response
+     * @return The AlexaOutput used to generate the speechlet response
+     */
     public AlexaOutput getOutput() {
         return output;
     }
 
+    /**
+     * Gets the generated output speech.
+     * @return the generated output speech.
+     */
     public OutputSpeech getOutputSpeech() {
         if (outputSpeech != null) return outputSpeech;
 
@@ -66,6 +90,10 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         return outputSpeech;
     }
 
+    /**
+     * Gets the generated reprompt.
+     * @return the generated reprompt
+     */
     public Reprompt getReprompt() {
         if (reprompt != null || !output.shouldReprompt()) return reprompt;
 
@@ -82,10 +110,31 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         return null;
     }
 
-    private String fillSlotsInUtterance(final String utterance) {
+    private String pickPhraseFromMultiPhraseCollection(final String utterance) {
         final StringBuffer buffer = new StringBuffer();
-        // extract all the placeholders fosund in the utterance
-        final Matcher slots = Pattern.compile("\\{(.*?)\\}").matcher(utterance);
+        // extract all the phrase collection (e.g. [Hello|Hi|Welcome] found in the utterance
+        final Matcher multiPhrases = Pattern.compile("\\[(.*?)\\]").matcher(utterance);
+        // for any of the placeholders ...
+        while (multiPhrases.find()) {
+            final String multiPhrase = multiPhrases.group(1);
+            final List<String> multiPhraseCollection = Arrays.asList(multiPhrase.split("\\|"));
+            final String randomPhrase = getRandomOf(multiPhraseCollection).orElse("");
+            multiPhrases.appendReplacement(buffer, randomPhrase);
+        }
+        multiPhrases.appendTail(buffer);
+        return buffer.toString();
+    }
+
+    private Optional<String> getRandomOf(final List<String> list) {
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(new Random().nextInt(list.size())));
+    }
+
+    private String fillSlotsInUtterance(final String utterance) {
+        // first of all remove mutliphrases with randomly picked phrase out of these
+        final String cleanedUtterance = pickPhraseFromMultiPhraseCollection(utterance);
+        final StringBuffer buffer = new StringBuffer();
+        // extract all the placeholders found in the utterance
+        final Matcher slots = Pattern.compile("\\{(.*?)\\}").matcher(cleanedUtterance);
         // for any of the placeholders ...
         while (slots.find()) {
             // ... placeholder-name is the slotName to look after in two places of the output

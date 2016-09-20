@@ -21,16 +21,33 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AlexaRequestStreamHandler implements RequestStreamHandler {
+    /**
+     * Provides a set of application-id(s) you can find in the Alexa developer console of your skill.
+     * Only requests coming in with these application-id(s) pass the request verification.
+     * @return supported application ids
+     */
     public Set<String> getSupportedApplicationIds() {
         final AlexaApplication app = this.getClass().getAnnotation(AlexaApplication.class);
         return app != null ? Stream.of(app.ApplicationIds()).collect(Collectors.toSet()) : Collections.emptySet();
     }
 
+    /**
+     * Provides the speechlet used to handle the request.
+     * @return speechlet used to handle the request.
+     */
     public Class<? extends AlexaSpeechlet> getSpeechlet() {
         final AlexaApplication app = this.getClass().getAnnotation(AlexaApplication.class);
         return app != null ? app.Speechlet() : AlexaSpeechlet.class;
     }
 
+    /**
+     * The handler method is called on a Lambda execution.
+     * @param input the input stream containing the Lambda request payload
+     * @param output the output stream containing the Lambda response payload
+     * @param context a context for a Lambda execution.
+     * @throws IOException exception is thrown on invalid request payload or on a provided speechlet
+     * handler having no public constructor taking a String containing the locale
+     */
     @Override
     public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
@@ -50,13 +67,17 @@ public abstract class AlexaRequestStreamHandler implements RequestStreamHandler 
             byte[] outputBytes = handler.handleSpeechletCall(speechlet, serializedSpeechletRequest);
             output.write(outputBytes);
         } catch (SpeechletRequestHandlerException | SpeechletException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
+    /**
+     * Constructs the stream handler giving it all the provided information.
+     * @return stream handler
+     */
     private SpeechletRequestHandler getRequestStreamHandler() {
         final Set<String> supportedApplicationIds = getSupportedApplicationIds();
-
+        // at least one supported application-id need to be provided
         Validate.notEmpty(supportedApplicationIds, "Must provide supported application-id either with overriding the getter or using AlexaApplication-annotation in " + this.getClass().getSimpleName());
 
         return new SpeechletRequestHandler(

@@ -22,6 +22,14 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * This annotation processors scans your skill project for classes
+ * tagged with the AlexaIntentListener annotation. It creates a factory
+ * encapsulating the logic of returning an instance of an AlexaIntentHandler
+ * according to an AlexaInput having the intent name. The factory also calls
+ * the verify-method of the AlexaIntentHandler which should return true in order
+ * to be considered by the factory.
+ */
 @AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class AlexaIntentListenerProcessor extends AbstractProcessor {

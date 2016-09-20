@@ -14,6 +14,22 @@ public class AlexaSpeechletResponseTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Test
+    public void getResponseWithSlotsAndReprompt() throws Exception {
+        final AlexaStateModelSample model = new AlexaStateModelSample();
+        model.setName("Paul");
+
+        final AlexaOutput output = AlexaOutput
+                .ask("IntentWithReprompts")
+                .withReprompt(true)
+                .putSlot("credits", 123, AlexaOutputFormat.NUMBER)
+                .putState(model).build();
+
+        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output);
+        Assert.assertEquals(output, response.getOutput());
+        Assert.assertNotNull(response.getReprompt());
+    }
+
+    @Test
     public void getResponseWithSlots() throws Exception {
         final AlexaStateModelSample model = new AlexaStateModelSample();
         model.setName("Paul");

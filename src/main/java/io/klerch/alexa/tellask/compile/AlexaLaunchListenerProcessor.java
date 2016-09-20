@@ -22,6 +22,14 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * This annotation processors scans your skill project for classes
+ * tagged with the AlexaLaunchListener annotation. It creates a factory
+ * encapsulating the ONE launch listener as only a single one makes sence
+ * in your skill project. The processor prints a mandatory warning in case
+ * it found more than one AlexaLaunchListener-tagged AlexaLaunchHandlers. It
+ * won't fail in this case and simply picks the first handler found in the project.
+ */
 @AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class AlexaLaunchListenerProcessor extends AbstractProcessor {
