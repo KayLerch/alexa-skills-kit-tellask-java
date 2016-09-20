@@ -115,7 +115,7 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
         return CodeBlock.of("if($S.equals(input.getIntentName()))" +
                 "{" +
                 "final AlexaIntentHandler handler = new $T();" +
-                "if (handler.shouldHandle(input)) return handler;" +
+                "if (handler.verify(input)) return handler;" +
                 "}", intentName, handlerClass);
     };
 

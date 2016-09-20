@@ -5,6 +5,7 @@ import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import io.klerch.alexa.tellask.util.YamlReader;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
@@ -114,11 +115,16 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         final StringBuffer buffer = new StringBuffer();
         // extract all the phrase collection (e.g. [Hello|Hi|Welcome] found in the utterance
         final Matcher multiPhrases = Pattern.compile("\\[(.*?)\\]").matcher(utterance);
-        // for any of the placeholders ...
+        // for any of the multi-phrases ...
         while (multiPhrases.find()) {
             final String multiPhrase = multiPhrases.group(1);
+            // single phrases are delimited by pipes
             final List<String> multiPhraseCollection = Arrays.asList(multiPhrase.split("\\|"));
+            // pick random phrase out of the collection
             final String randomPhrase = getRandomOf(multiPhraseCollection).orElse("");
+            if (StringUtils.isBlank(randomPhrase)) {
+                LOG.warn("Empty multi-phrase collection found in one of your utterances. Got replaced by an empty string in speechlet response.");
+            }
             multiPhrases.appendReplacement(buffer, randomPhrase);
         }
         multiPhrases.appendTail(buffer);

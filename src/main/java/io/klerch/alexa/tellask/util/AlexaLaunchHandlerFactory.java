@@ -8,6 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+/**
+ * Constructs the AlexaLaunchHandler which is tagged with the AlexaLaunchListener-annotation.
+ */
 public class AlexaLaunchHandlerFactory {
     private final static Logger LOG = Logger.getLogger(AlexaLaunchHandlerFactory.class);
 
@@ -15,6 +18,12 @@ public class AlexaLaunchHandlerFactory {
     public static final String FACTORY_CLASS_NAME = AlexaLaunchHandlerFactory.class.getSimpleName() + "Impl";
     public static final String FACTORY_METHOD_NAME = "createHandler";
 
+    /**
+     * Constructs the AlexaLaunchHandler which is tagged with the AlexaLaunchListener-annotation.
+     * If more than one of those handlers were found it will only return the first one found as
+     * your skill only needs one of them.
+     * @return AlexaLaunchHandler to handle launch events of your skill
+     */
     @SuppressWarnings("unchecked")
     public static Optional<AlexaLaunchHandler> createHandler() {
         try {

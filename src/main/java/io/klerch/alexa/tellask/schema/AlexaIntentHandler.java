@@ -13,9 +13,9 @@ public interface AlexaIntentHandler extends AlexaRequestHandler {
      * input for certain conditions (e.g. a slot exists). If you want this handler to be
      * selected whenever an intent appears simply return true. Returning true will invoke
      * the handleIntent method of this handler unless there is no handler for same intent which
-     * also returns true in shouldHandle and has a higher priority (set in the AlexaIntentListener-annotation)
+     * also returns true in verify and has a higher priority (set in the AlexaIntentListener-annotation)
      * @param input input request
      * @return true if this handler should handle the request with its handleIntent method.
      */
-    boolean shouldHandle(final AlexaInput input);
+    boolean verify(final AlexaInput input);
 }
