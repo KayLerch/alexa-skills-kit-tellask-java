@@ -18,7 +18,7 @@ public @interface AlexaSlotSave {
      * go into.
      * @return the slot name
      */
-    String SlotName();
+    String slotName();
 
     /**
      * The format to apply when putting the field's value into the slot (placeholder) of an
@@ -26,5 +26,5 @@ public @interface AlexaSlotSave {
      * of this field
      * @return the format to apply when putting the field's value into the slot of an utterance.
      */
-    AlexaOutputFormat FormatAs() default AlexaOutputFormat.TEXT;
+    AlexaOutputFormat formatAs() default AlexaOutputFormat.TEXT;
 }

@@ -37,8 +37,10 @@ public enum AlexaIntentType {
      * User confirms to a question in a certain context.
      */
     INTENT_YES("AMAZON.YesIntent"),
-    // TODO: new intents won't be supported unless Skills Kit SDK cannot handle missing session
-    /*INTENT_LOOP_OFF("AMAZON.LoopOffIntent"),
+    /*
+    new intents won't be supported unless Skills Kit SDK cannot handle missing session
+
+    INTENT_LOOP_OFF("AMAZON.LoopOffIntent"),
     INTENT_LOOP_ON("AMAZON.LoopOnIntent"),
     INTENT_PAUSE("AMAZON.PauseIntent"),
     INTENT_PREVIOUS("AMAZON.PreviousIntent"),

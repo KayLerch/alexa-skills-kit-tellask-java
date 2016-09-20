@@ -4,6 +4,8 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SsmlOutputSpeech;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.klerch.alexa.tellask.util.YamlReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -23,9 +25,11 @@ import java.util.regex.Pattern;
  * object is capable of turning your AlexaOutput into a valid speechlet response.
  */
 public class AlexaSpeechletResponse extends SpeechletResponse {
-    private final Logger LOG = Logger.getLogger(AlexaSpeechletResponse.class);
+    private static final Logger LOG = Logger.getLogger(AlexaSpeechletResponse.class);
 
+    @JsonIgnore
     private final AlexaOutput output;
+    @JsonIgnore
     private final YamlReader yamlReader;
     private final OutputSpeech outputSpeech;
     private final Reprompt reprompt;
@@ -59,6 +63,12 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         }
     }
 
+    @Override
+    @JsonInclude // works around a bug in Skills Kit SDK
+    public boolean getShouldEndSession() {
+        return output.shouldEndSession();
+    }
+
     /**
      * The AlexaOutput used to generate the speechlet response
      * @return The AlexaOutput used to generate the speechlet response
@@ -71,8 +81,11 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
      * Gets the generated output speech.
      * @return the generated output speech.
      */
+    @Override
     public OutputSpeech getOutputSpeech() {
-        if (outputSpeech != null) return outputSpeech;
+        if (outputSpeech != null) {
+            return outputSpeech;
+        }
 
         final String utterance;
 
@@ -86,27 +99,30 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
 
         final String utteranceSsml = resolveSlotsInUtterance(utterance);
 
-        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        outputSpeech.setSsml(utteranceSsml);
-        return outputSpeech;
+        final SsmlOutputSpeech ssmlOutputSpeech = new SsmlOutputSpeech();
+        ssmlOutputSpeech.setSsml(utteranceSsml);
+        return ssmlOutputSpeech;
     }
 
     /**
      * Gets the generated reprompt.
      * @return the generated reprompt
      */
+    @Override
     public Reprompt getReprompt() {
-        if (reprompt != null || !output.shouldReprompt()) return reprompt;
+        if (reprompt != null || !output.shouldReprompt()) {
+            return reprompt;
+        }
 
         final String repromptSpeech = yamlReader.getRandomReprompt(output).orElse(null);
 
         if (repromptSpeech != null) {
             final String utteranceSsml = resolveSlotsInUtterance(repromptSpeech);
-            final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-            outputSpeech.setSsml(utteranceSsml);
-            final Reprompt reprompt = new Reprompt();
-            reprompt.setOutputSpeech(outputSpeech);
-            return reprompt;
+            final SsmlOutputSpeech ssmlOutputSpeech = new SsmlOutputSpeech();
+            ssmlOutputSpeech.setSsml(utteranceSsml);
+            final Reprompt reprompt2 = new Reprompt();
+            reprompt2.setOutputSpeech(ssmlOutputSpeech);
+            return reprompt2;
         }
         return null;
     }

@@ -19,9 +19,13 @@ import java.io.InputStream;
  * by having those files in the right place.
  */
 public class ResourceUtteranceReader implements UtteranceReader {
-    public final String defaultResourceLocation = "/utterances.yml";
-    public final String leadingPath;
-    private String resourceLocation = defaultResourceLocation;
+    /**
+     * The default resource location. This is just the trailing portion of
+     * the qualified resource path.
+     */
+    public static final String DEFAULT_RESOURCE_LOCATION = "/utterances.yml";
+    private final String leadingPath;
+    private String resourceLocation = DEFAULT_RESOURCE_LOCATION;
 
     /**
      * New reader for classloader-resources. Note that a
@@ -40,18 +44,25 @@ public class ResourceUtteranceReader implements UtteranceReader {
      * by setting resourceLocation). You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml.
      * @param leadingPath leading path to the actual resource (YAML) file
      */
-    public ResourceUtteranceReader(String leadingPath) {
+    public ResourceUtteranceReader(final String leadingPath) {
         Validate.notBlank(leadingPath, "Leading path for utterance resource must not be blank. At least give it a '/'");
+        final StringBuilder sb = new StringBuilder();
+
         if (!leadingPath.startsWith("/"))
-            leadingPath += "/";
+            sb.append("/");
+
+        sb.append(leadingPath);
+
         if (!leadingPath.endsWith("/"))
-            leadingPath = "/" + leadingPath;
-        this.leadingPath = leadingPath;
+            sb.append("/");
+
+        this.leadingPath = sb.toString();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getResourceLocation() {
         return this.resourceLocation;
     }
@@ -59,6 +70,7 @@ public class ResourceUtteranceReader implements UtteranceReader {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setResourceLocation(final String resourceLocation) {
         Validate.notBlank(resourceLocation, "No resource location is set to read from.");
         Validate.notBlank(resourceLocation.replace("/", ""), "No resource location is set to read from.");
@@ -69,6 +81,7 @@ public class ResourceUtteranceReader implements UtteranceReader {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ResourceUtteranceReader fromResourceLocation(final String resourceLocation) {
         setResourceLocation(resourceLocation);
         return this;
@@ -77,6 +90,7 @@ public class ResourceUtteranceReader implements UtteranceReader {
     /**
      * {@inheritDoc}
      */
+    @Override
     public InputStream read(final String locale) {
         Validate.notNull(locale, "Local must not be blank.");
 

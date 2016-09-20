@@ -12,11 +12,15 @@ import java.util.Optional;
  * Constructs the AlexaIntentHandler which is tagged with the AlexaIntentListener-annotation.
  */
 public class AlexaIntentHandlerFactory {
-    private final static Logger LOG = Logger.getLogger(AlexaIntentHandlerFactory.class);
-
     public static final String FACTORY_PACKAGE = AlexaIntentHandlerFactory.class.getPackage().getName();
     public static final String FACTORY_CLASS_NAME = AlexaIntentHandlerFactory.class.getSimpleName() + "Impl";
     public static final String FACTORY_METHOD_NAME = "createHandler";
+
+    private static final Logger LOG = Logger.getLogger(AlexaIntentHandlerFactory.class);
+
+    private AlexaIntentHandlerFactory() {
+        // hides the implicit public constructor
+    }
 
     /**
      * Constructs the AlexaIntentHandler which is tagged with the AlexaIntentListener-annotation.

@@ -17,6 +17,10 @@ import java.util.function.Predicate;
  * The AlexaOutput provides all the information necessary to generate the speechlet response.
  */
 public class AlexaOutput {
+    /**
+     * The default locale used when no locale is provided in the speechlet request
+     */
+    public static final String DEFAULT_LOCALE = "en-US";
     private String intentName;
     private Boolean shouldEndSession;
     private Boolean shouldReprompt;
@@ -26,7 +30,7 @@ public class AlexaOutput {
     private final UtteranceReader utteranceReader;
     private final String locale;
 
-    private AlexaOutput(final AlexaResponseBuilder builder) {
+    private AlexaOutput(final AlexaOutputBuilder builder) {
         this.intentName = builder.intentName;
         this.shouldEndSession = builder.shouldEndSession;
         this.shouldReprompt = builder.shouldReprompt;
@@ -116,8 +120,8 @@ public class AlexaOutput {
      *                   of reply utterances to choose from in the YAML utterances
      * @return a builder for creating a new AlexaOutput
      */
-    public static AlexaResponseBuilder tell(final String intentName) {
-        return new AlexaResponseBuilder(true, intentName);
+    public static AlexaOutputBuilder tell(final String intentName) {
+        return new AlexaOutputBuilder(true, intentName);
     }
 
     /**
@@ -127,11 +131,14 @@ public class AlexaOutput {
      *                   of reply utterances to choose from in the YAML utterances
      * @return a builder for creating a new AlexaOutput
      */
-    public static AlexaResponseBuilder ask(final String intentName) {
-        return new AlexaResponseBuilder(false, intentName);
+    public static AlexaOutputBuilder ask(final String intentName) {
+        return new AlexaOutputBuilder(false, intentName);
     }
 
-    public static class AlexaResponseBuilder {
+    /**
+     * A builder to create AlexaOutput objects
+     */
+    public static class AlexaOutputBuilder {
         private final String intentName;
         private final Boolean shouldEndSession;
         private Boolean shouldReprompt = false;
@@ -139,9 +146,12 @@ public class AlexaOutput {
         private List<AlexaOutputSlot> slots = new ArrayList<>();
         private Card card;
         private UtteranceReader utteranceReader = new ResourceUtteranceReader();
-        private String locale = "en-US";
+        private String locale = AlexaOutput.DEFAULT_LOCALE;
 
-        private AlexaResponseBuilder(final Boolean shouldEndSession, final String intentName) {
+        private Predicate<AlexaStateModel> notExists = (final AlexaStateModel model) ->
+                !(this.models.stream().anyMatch(m -> m.getModel().equals(model)));
+
+        private AlexaOutputBuilder(final Boolean shouldEndSession, final String intentName) {
             this.shouldEndSession = shouldEndSession;
             this.intentName = intentName;
         }
@@ -153,7 +163,7 @@ public class AlexaOutput {
          * @param slotValue value of the slot filling in the utterance placeholder
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder putSlot(final String slotName, final Object slotValue) {
+        public AlexaOutputBuilder putSlot(final String slotName, final Object slotValue) {
             slots.add(new AlexaOutputSlot(slotName, slotValue));
             return this;
         }
@@ -165,7 +175,7 @@ public class AlexaOutput {
          * @param slotFormat the format a value is applied with when filling it in the utterance placeholder
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder putSlot(final String slotName, final Object slotValue, final AlexaOutputFormat slotFormat) {
+        public AlexaOutputBuilder putSlot(final String slotName, final Object slotValue, final AlexaOutputFormat slotFormat) {
             slots.add(new AlexaOutputSlot(slotName, slotValue).formatAs(slotFormat));
             return this;
         }
@@ -175,7 +185,7 @@ public class AlexaOutput {
          * @param slot the slot object containg all the details like the slot name, value and format
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder putSlot(final AlexaOutputSlot slot) {
+        public AlexaOutputBuilder putSlot(final AlexaOutputSlot slot) {
             slots.add(slot);
             return this;
         }
@@ -189,8 +199,10 @@ public class AlexaOutput {
          *               to the associated state handler.
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder putState(final AlexaStateModel... models) {
-            if (models == null) return this;
+        public AlexaOutputBuilder putState(final AlexaStateModel... models) {
+            if (models == null) {
+                return this;
+            }
             return withDeduplicatedStateOf(Arrays.asList(models));
         }
 
@@ -203,7 +215,7 @@ public class AlexaOutput {
          *               to the associated state handler.
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder putState(final Collection<AlexaStateModel> models) {
+        public AlexaOutputBuilder putState(final Collection<AlexaStateModel> models) {
             return withDeduplicatedStateOf(models);
         }
 
@@ -212,16 +224,12 @@ public class AlexaOutput {
          * @param locale The new locale to use when replying to the user
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder withLocale(final String locale) {
+        public AlexaOutputBuilder withLocale(final String locale) {
             this.locale = locale;
             return this;
         }
 
-        private Predicate<AlexaStateModel> notExists = ((final AlexaStateModel model) ->
-                !(this.models.stream().anyMatch(m -> m.getModel().equals(model))));
-
-
-        private AlexaResponseBuilder withDeduplicatedStateOf(final Collection<AlexaStateModel> stateModels) {
+        private AlexaOutputBuilder withDeduplicatedStateOf(final Collection<AlexaStateModel> stateModels) {
             stateModels.stream().filter(notExists)
                     .map(AlexaIntentModel::new)
                     .forEach(models::add);
@@ -233,7 +241,7 @@ public class AlexaOutput {
          * @param card The card attached to the speechlet response.
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder withCard(final Card card) {
+        public AlexaOutputBuilder withCard(final Card card) {
             this.card = card;
             return this;
         }
@@ -246,7 +254,7 @@ public class AlexaOutput {
          * @param shouldReprompt Set true if the speechlet response should contain a reprompt
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder withReprompt(final boolean shouldReprompt) {
+        public AlexaOutputBuilder withReprompt(final boolean shouldReprompt) {
             this.shouldReprompt = shouldReprompt;
             return this;
         }
@@ -259,7 +267,7 @@ public class AlexaOutput {
          * @param reader The utterance reader implementation of your desire
          * @return the AlexaOutput builder
          */
-        public AlexaResponseBuilder withReader(final UtteranceReader reader) {
+        public AlexaOutputBuilder withReader(final UtteranceReader reader) {
             this.utteranceReader = reader;
             return this;
         }

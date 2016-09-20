@@ -1,10 +1,11 @@
-package io.klerch.alexa.tellask.compile;
+package io.klerch.alexa.tellask.processor;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.*;
 import io.klerch.alexa.tellask.schema.AlexaLaunchHandler;
 import io.klerch.alexa.tellask.schema.AlexaLaunchListener;
 import io.klerch.alexa.tellask.util.AlexaLaunchHandlerFactory;
+import org.apache.log4j.Logger;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -33,10 +34,54 @@ import java.util.stream.Collectors;
 @AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class AlexaLaunchListenerProcessor extends AbstractProcessor {
-    private ProcessingEnvironment processingEnv;
+    private static final Logger LOG = Logger.getLogger(AlexaLaunchListenerProcessor.class);
+    private ProcessingEnvironment processingEnvironment;
 
-    public AlexaLaunchListenerProcessor() {
-    }
+    private Function<TypeElement, CodeBlock> generateCode = (final TypeElement element) -> {
+        final ClassName handlerClass = ClassName.get(element);
+        return CodeBlock.of("return new $T();", handlerClass);
+    };
+
+    private Predicate<TypeElement> isConcretePublicClass = (final TypeElement t) -> {
+        final boolean condition = !(t.getModifiers().contains(Modifier.ABSTRACT) &&
+                t.getModifiers().contains(Modifier.PUBLIC));
+
+        if (!condition) {
+            final ClassName handlerClass = ClassName.get(t);
+            processingEnvironment.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but is abstract or not public. It won't be considered for handling intents.");
+        }
+        return condition;
+    };
+
+    private Predicate<TypeElement> implementsAlexaLaunchHandler = (final TypeElement t) -> {
+        final TypeMirror alexaHandler = processingEnvironment.getElementUtils().getTypeElement(AlexaLaunchHandler.class.getTypeName()).asType();
+        final boolean condition = processingEnvironment.getTypeUtils().isAssignable(t.asType(), alexaHandler);
+
+        if (!condition) {
+            final ClassName handlerClass = ClassName.get(t);
+            processingEnvironment.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but does not implement " + AlexaLaunchHandler.class.getSimpleName() + ". It won't be considered for handling intents.");
+        }
+        return condition;
+    };
+
+    private Predicate<TypeElement> hasDefaultConstructor = (final TypeElement t) -> {
+        final boolean condition = t.getEnclosedElements().stream()
+                // for all constructors
+                .filter(e -> ElementKind.CONSTRUCTOR.equals(e.getKind()))
+                .map(e -> (ExecutableElement) e)
+                // check for parameterless methods
+                .filter(e -> e.getParameters().isEmpty())
+                // check for public methods
+                .filter(e -> e.getModifiers().contains(Modifier.PUBLIC))
+                // needs at least one constructor matching the above conditions
+                .findFirst().isPresent();
+
+        if (!condition) {
+            final ClassName handlerClass = ClassName.get(t);
+            processingEnvironment.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but does not contain a public default constructor. It won't be considered for handling intents.");
+        }
+        return condition;
+    };
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
@@ -46,12 +91,14 @@ public class AlexaLaunchListenerProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        this.processingEnv = processingEnv;
+        this.processingEnvironment = processingEnv;
     }
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver()) return true;
+        if (roundEnv.processingOver()) {
+            return true;
+        }
 
         final MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(AlexaLaunchHandlerFactory.FACTORY_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -76,7 +123,7 @@ public class AlexaLaunchListenerProcessor extends AbstractProcessor {
         if (codeBlocks.isEmpty()) {
             return true;
         } else if (codeBlocks.size() > 1) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "There is more than one class annotated with " + AlexaLaunchListener.class.getSimpleName() + ". Only one of them will be considered.");
+            processingEnvironment.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "There is more than one class annotated with " + AlexaLaunchListener.class.getSimpleName() + ". Only one of them will be considered.");
         }
 
         // add only the first
@@ -92,57 +139,12 @@ public class AlexaLaunchListenerProcessor extends AbstractProcessor {
         try {
             JavaFile.builder(AlexaLaunchHandlerFactory.FACTORY_PACKAGE, alexaIntentHandlerFactory)
                     .build()
-                    .writeTo(processingEnv.getFiler());
+                    .writeTo(processingEnvironment.getFiler());
         } catch (final IOException e) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Could not generate factory caused by " + e.getMessage());
+            LOG.error(e);
+            processingEnvironment.getMessager().printMessage(Diagnostic.Kind.ERROR, "Could not generate factory caused by " + e.getMessage());
             return false;
         }
         return true;
     }
-
-    private Function<TypeElement, CodeBlock> generateCode = (final TypeElement element) -> {
-        final ClassName handlerClass = ClassName.get(element);
-        return CodeBlock.of("return new $T();", handlerClass);
-    };
-
-    private Predicate<TypeElement> isConcretePublicClass = (final TypeElement t) -> {
-        final boolean condition = !(t.getModifiers().contains(Modifier.ABSTRACT) &&
-                t.getModifiers().contains(Modifier.PUBLIC));
-
-        if (!condition) {
-            final ClassName handlerClass = ClassName.get(t);
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but is abstract or not public. It won't be considered for handling intents.");
-        }
-        return condition;
-    };
-
-    private Predicate<TypeElement> implementsAlexaLaunchHandler = (final TypeElement t) -> {
-        final TypeMirror alexaHandler = processingEnv.getElementUtils().getTypeElement(AlexaLaunchHandler.class.getTypeName()).asType();
-        final boolean condition = processingEnv.getTypeUtils().isAssignable(t.asType(), alexaHandler);
-
-        if (!condition) {
-            final ClassName handlerClass = ClassName.get(t);
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but does not implement " + AlexaLaunchHandler.class.getSimpleName() + ". It won't be considered for handling intents.");
-        }
-        return condition;
-    };
-
-    private Predicate<TypeElement> hasDefaultConstructor = (final TypeElement t) -> {
-        final boolean condition = t.getEnclosedElements().stream()
-                // for all constructors
-                .filter(e -> ElementKind.CONSTRUCTOR.equals(e.getKind()))
-                .map(e -> (ExecutableElement) e)
-                // check for parameterless methods
-                .filter(e -> e.getParameters().isEmpty())
-                // check for public methods
-                .filter(e -> e.getModifiers().contains(Modifier.PUBLIC))
-                // needs at least one constructor matching the above conditions
-                .findFirst().isPresent();
-
-        if (!condition) {
-            final ClassName handlerClass = ClassName.get(t);
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Class " + handlerClass.simpleName() + " is annotated with " + AlexaLaunchListener.class.getSimpleName() + " but does not contain a public default constructor. It won't be considered for handling intents.");
-        }
-        return condition;
-    };
 }

@@ -7,9 +7,9 @@ import com.amazon.speech.speechlet.SpeechletRequest;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
-import java.util.Optional;
+import java.io.Serializable;
 
 /**
  * This is the input for an intent request handing in all necessary information
@@ -22,7 +22,7 @@ public class AlexaInput {
     private final String locale;
 
     /**
-     * Creates a new Alexa input giving it all information from an actual Speechlet request
+     * Creates a new Alexa input giving it all information from an actual speechlet request
      * @param request the intent request
      * @param session the session object
      * @param locale the locale of the request
@@ -35,7 +35,7 @@ public class AlexaInput {
     }
 
     /**
-     * Creates a new Alexa input giving it all information from an actual Speechlet request
+     * Creates a new Alexa input giving it all information from an actual speechlet request
      * @param request the intent request
      * @param session the session object
      * @param locale the locale of the request
@@ -47,6 +47,10 @@ public class AlexaInput {
         this.locale = locale;
     }
 
+    /**
+     * Gets the intent name
+     * @return the intent name
+     */
     public String getIntentName() {
         return intentRequest != null ? intentRequest.getIntent().getName() : null;
     }
@@ -101,7 +105,7 @@ public class AlexaInput {
      * @return True, if the slot exists in the intent request and is a number.
      */
     public boolean hasSlotIsNumber(final String slotName) {
-        return hasSlot(slotName) && StringUtils.isNumeric(intentRequest.getIntent().getSlot(slotName).getValue());
+        return hasSlot(slotName) && NumberUtils.isNumber(intentRequest.getIntent().getSlot(slotName).getValue());
     }
 
     /**
@@ -114,20 +118,12 @@ public class AlexaInput {
         return hasSlot(slotName) && BooleanUtils.toBoolean(intentRequest.getIntent().getSlot(slotName).getValue());
     }
 
+    /**
+     * Gets the slot value as a string in case slot exists otherwise null
+     * @param slotName name of the slot to look after
+     * @return slot value as a string in case slot exists otherwise null
+     */
     public String getSlotValue(final String slotName) {
         return hasSlot(slotName) ? intentRequest.getIntent().getSlot(slotName).getValue() : null;
-    }
-
-    /**
-     * Gets a slot's value casted to the given type or returns null if slot is not existent.
-     * @param slotValueType Class of a type to cast slot value to
-     * @param slotName name of the slot to look after
-     * @param <T> Type to cast slot value to
-     * @return Typed value of the slot
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getSlotValueAs(Class<T> slotValueType, final String slotName) {
-        final String slotValue = getSlotValue(slotName);
-        return slotValue != null ? (T)slotValue : null;
     }
 }

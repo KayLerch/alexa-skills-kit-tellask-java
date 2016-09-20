@@ -5,10 +5,10 @@ import io.klerch.alexa.tellask.schema.AlexaOutputFormat;
 import io.klerch.alexa.tellask.schema.AlexaSlotSave;
 
 public class AlexaStateModelSample extends AlexaStateModel {
-    @AlexaSlotSave(SlotName = "slot1")
+    @AlexaSlotSave(slotName = "slot1")
     private Integer numbericSlotSave;
 
-    @AlexaSlotSave(SlotName = "name", FormatAs = AlexaOutputFormat.SPELLOUT)
+    @AlexaSlotSave(slotName = "name", formatAs = AlexaOutputFormat.SPELLOUT)
     private String name;
 
     private String notSlotSave;

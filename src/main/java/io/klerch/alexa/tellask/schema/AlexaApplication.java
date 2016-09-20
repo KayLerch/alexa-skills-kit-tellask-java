@@ -17,7 +17,7 @@ public @interface AlexaApplication {
      * will be rejected.
      * @return set of supported application-ids
      */
-    String[] ApplicationIds();
+    String[] applicationIds() default {};
 
     /**
      * A speechlet handler to delegate speechlet requests to. If you don't provide
@@ -25,5 +25,5 @@ public @interface AlexaApplication {
      * implementation AlexaSpeechlet is used.
      * @return speechlet handler to delegate speechlet requests to
      */
-    Class<? extends AlexaSpeechlet> Speechlet() default AlexaSpeechlet.class;
+    Class<? extends AlexaSpeechlet> speechlet() default AlexaSpeechlet.class;
 }

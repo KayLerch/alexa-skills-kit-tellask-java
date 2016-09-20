@@ -34,7 +34,7 @@ public abstract class AlexaRequestStreamHandler implements RequestStreamHandler 
      */
     public Set<String> getSupportedApplicationIds() {
         final AlexaApplication app = this.getClass().getAnnotation(AlexaApplication.class);
-        return app != null ? Stream.of(app.ApplicationIds()).collect(Collectors.toSet()) : Collections.emptySet();
+        return app != null ? Stream.of(app.applicationIds()).collect(Collectors.toSet()) : Collections.emptySet();
     }
 
     /**
@@ -43,7 +43,7 @@ public abstract class AlexaRequestStreamHandler implements RequestStreamHandler 
      */
     public Class<? extends AlexaSpeechlet> getSpeechlet() {
         final AlexaApplication app = this.getClass().getAnnotation(AlexaApplication.class);
-        return app != null ? app.Speechlet() : AlexaSpeechlet.class;
+        return app != null ? app.speechlet() : AlexaSpeechlet.class;
     }
 
     /**

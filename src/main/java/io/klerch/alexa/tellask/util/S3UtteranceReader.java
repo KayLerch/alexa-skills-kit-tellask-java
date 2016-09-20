@@ -18,10 +18,15 @@ import java.io.InputStream;
  * files in the right place.
  */
 public class S3UtteranceReader implements UtteranceReader {
+    /**
+     * The default resource location. This is just the trailing portion of
+     * the qualified resource path.
+     */
+    public static final String DEFAULT_RESOURCE_LOCATION = "/utterances.yml";
     private final AmazonS3Client s3Client;
     private final String bucketName;
     private final String leadingPath;
-    private String resourceLocation = "/utterances.yml";
+    private String resourceLocation = DEFAULT_RESOURCE_LOCATION;
 
     /**
      * A new S3 reader pointing to a bucket
@@ -63,11 +68,17 @@ public class S3UtteranceReader implements UtteranceReader {
         this.s3Client = client;
         this.bucketName = bucketName;
 
+        final StringBuilder sb = new StringBuilder();
+
         if (!leadingPath.startsWith("/"))
-            leadingPath += "/";
+            sb.append("/");
+
+        sb.append(leadingPath);
+
         if (!leadingPath.endsWith("/"))
-            leadingPath = "/" + leadingPath;
-        this.leadingPath = leadingPath;
+            sb.append("/");
+
+        this.leadingPath = sb.toString();
     }
 
     /**

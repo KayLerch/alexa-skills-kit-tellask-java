@@ -1,16 +1,11 @@
 package io.klerch.alexa.tellask.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.klerch.alexa.tellask.ModelFactory;
-import io.klerch.alexa.tellask.model.AlexaOutput;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public class YamlReaderTest {
     private YamlReader reader;

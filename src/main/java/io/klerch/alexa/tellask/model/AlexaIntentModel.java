@@ -19,7 +19,21 @@ import java.util.stream.Stream;
  * in their values being filled in the corresponding utterance placeholders.
  */
 public class AlexaIntentModel {
+    @AlexaStateIgnore
+    private static final Logger LOG = Logger.getLogger(AlexaIntentModel.class);
+    @AlexaStateIgnore
     private AlexaStateModel model;
+
+    private Function<Field, AlexaOutputSlot> makeASlot = (final Field field) -> {
+        field.setAccessible(true);
+        final AlexaSlotSave slotSave = field.getAnnotation(AlexaSlotSave.class);
+        try {
+            return new AlexaOutputSlot(slotSave.slotName(), model.get(field)).formatAs(slotSave.formatAs());
+        } catch (AlexaStateException e) {
+            LOG.error(e);
+            return null;
+        }
+    };
 
     /**
      * Turns a state model into an intent model. You likely need this when reading
@@ -58,20 +72,6 @@ public class AlexaIntentModel {
         this.model.saveState();
     }
 
-    @AlexaStateIgnore
-    private final Logger log = Logger.getLogger(AlexaIntentModel.class);
-
-    private Function<Field, AlexaOutputSlot> makeASlot = (final Field field) -> {
-        field.setAccessible(true);
-        final AlexaSlotSave slotSave = field.getAnnotation(AlexaSlotSave.class);
-        try {
-            return new AlexaOutputSlot(slotSave.SlotName(), model.get(field)).formatAs(slotSave.FormatAs());
-        } catch (AlexaStateException e) {
-            log.error(e);
-            return null;
-        }
-    };
-
     /**
      * True, if the model has at least one field tagged as AlexaSlotSave
      * @return True, if the model has at least one field tagged as AlexaSlotSave
@@ -107,7 +107,7 @@ public class AlexaIntentModel {
 
     private Optional<Field> getSlotSavedField(final String slotName) {
         return getSlotSavedFields()
-                .filter(field -> field.getAnnotation(AlexaSlotSave.class).SlotName().equals(slotName))
+                .filter(field -> field.getAnnotation(AlexaSlotSave.class).slotName().equals(slotName))
                 .findFirst();
     }
 }
