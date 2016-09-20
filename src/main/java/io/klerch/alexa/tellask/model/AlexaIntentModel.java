@@ -26,7 +26,7 @@ public class AlexaIntentModel {
      * model from an AlexaStateHandler and you want to hand this model over to an
      * AlexaOutput object in order to let it's updated state save automatically and
      * to have AlexaSlotSave-tagged fields go into utterance-placeholders
-     * @param model
+     * @param model state model
      */
     public AlexaIntentModel (final AlexaStateModel model) {
         this.model = model;

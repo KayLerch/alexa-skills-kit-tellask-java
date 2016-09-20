@@ -23,7 +23,7 @@ public @interface AlexaApplication {
      * A speechlet handler to delegate speechlet requests to. If you don't provide
      * your custom handler which needs to extend AlexaSpeechlet then the default
      * implementation AlexaSpeechlet is used.
-     * @return
+     * @return speechlet handler to delegate speechlet requests to
      */
     Class<? extends AlexaSpeechlet> Speechlet() default AlexaSpeechlet.class;
 }

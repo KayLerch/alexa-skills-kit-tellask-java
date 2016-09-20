@@ -59,7 +59,7 @@ public enum AlexaIntentType {
 
     /**
      * Gets the qualified name of the intent in Alexa.
-     * @return
+     * @return qualified name of the intent in Alexa
      */
     public String getName() {
         return name;

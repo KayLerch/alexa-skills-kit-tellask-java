@@ -67,7 +67,7 @@ public class AlexaOutput {
     /**
      * All the state models whose state will be saved automatically when
      * giving AlexaOutput to the speechlet.
-     * @return
+     * @return state models whose state will be saved automatically
      */
     public List<AlexaIntentModel> getModels() {
         return models;
@@ -266,7 +266,7 @@ public class AlexaOutput {
 
         /**
          * Builds the AlexaOutput. Be sure you provided at least a non-blank intent-name.
-         * @return
+         * @return the AlexaOutput builder
          */
         public AlexaOutput build() {
             Validate.notBlank(intentName, "Intent name must not be blank.");

@@ -49,6 +49,7 @@ public class AlexaOutputSlot {
      * Sets the format of the slot output in an utterance. Usually this is an SSML tag wrapped around the
      * slot value.
      * @param format the format of the slot output in an utterance. Must not be null.
+     * @return this
      */
     public AlexaOutputSlot formatAs(final AlexaOutputFormat format) {
         setFormatAs(format);
