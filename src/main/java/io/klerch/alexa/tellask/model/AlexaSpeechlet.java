@@ -9,6 +9,13 @@ import io.klerch.alexa.tellask.util.AlexaIntentHandlerFactory;
 import io.klerch.alexa.tellask.util.AlexaLaunchHandlerFactory;
 import org.apache.log4j.Logger;
 
+/**
+ * The AlexaSpeechlet is the actual handler of incoming speechlet requests. It is
+ * an extended version of the general Speechlet of the Alexa Skills Kit SDK. You don't
+ * need your own extension of this class as this one already gets back to all the handlers
+ * annotated with either AlexaLaunchListener or AlexaIntentListener. Most likely you want
+ * to override onSessionStarted and onSessionEnded to have your own routines implemented.
+ */
 public class AlexaSpeechlet implements Speechlet {
     private final Logger LOG = Logger.getLogger(AlexaSpeechlet.class);
     public final String LOCALE;
@@ -17,11 +24,17 @@ public class AlexaSpeechlet implements Speechlet {
         this.LOCALE = locale;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session) throws SpeechletException {
         LOG.debug("Session has started.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SpeechletResponse onLaunch(final LaunchRequest request, final Session session) throws SpeechletException {
         final AlexaInput input = new AlexaInput(request, session, LOCALE);
@@ -29,6 +42,9 @@ public class AlexaSpeechlet implements Speechlet {
         return handleRequest(input, handler);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SpeechletResponse onIntent(final IntentRequest request, final Session session) throws SpeechletException {
         final AlexaInput input = new AlexaInput(request, session, LOCALE);
@@ -36,6 +52,9 @@ public class AlexaSpeechlet implements Speechlet {
         return handleRequest(input, handler);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSessionEnded(final SessionEndedRequest request, final Session session) throws SpeechletException {
         LOG.debug("Session has ended.");

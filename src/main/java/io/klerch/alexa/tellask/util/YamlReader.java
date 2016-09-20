@@ -9,44 +9,96 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * This reader processes input coming from the resource streams of
+ * UtteranceReader to extract the utterances and reprompts and optionally
+ * picks one of them randomly.
+ */
 public class YamlReader {
     private final UtteranceReader utteranceReader;
     private final Map<String, List<Object>> phrases = new HashMap<>();
     private final String locale;
 
+    /**
+     * A new YAMLReader needs an UtteranceReader so it can obtain YAML content with utterances.
+     * @param utteranceReader the UtteranceReader reading ot YAML content with utterances
+     * @param locale Localized skills will have multiple YAML files (one for each language). By
+     *               giving this reader a locale it lets the UtteranceReader read out the appropriate
+     *               YAML file.
+     */
     public YamlReader(final UtteranceReader utteranceReader, final String locale) {
         this.utteranceReader = utteranceReader;
         this.locale = locale;
     }
 
+    /**
+     * Returns a set of utterances for an intent which is defined in the AlexaOutput.
+     * @param output The AlexaOutput containing the intent name whose utterances are to be returned.
+     * @return set of utterances for an intent which is defined in the AlexaOutput
+     */
     public List<String> getUtterances(final AlexaOutput output) {
         return getUtterances(output.getIntentName());
     }
 
+    /**
+     * Returns an utterance randomly picked from a set of utterances for an intent which is defined in the AlexaOutput.
+     * @param output The AlexaOutput containing the intent name.
+     * @return utterance randomly picked from a set of utterances for an intent which is defined in the AlexaOutput
+     */
     public Optional<String> getRandomUtterance(final AlexaOutput output) {
         return getRandomUtterance(output.getIntentName());
     }
 
+    /**
+     * Returns a set of utterances for a given intent.
+     * @param intentName the intent name whose utterances are to be returned
+     * @return set of utterances for the given intent
+     */
     public List<String> getUtterances(final String intentName) {
         return getPhrasesForIntent(intentName, 0);
     }
 
+    /**
+     * Returns an utterance randomly picked from a set of utterances for a given intent.
+     * @param intentName The intent name.
+     * @return utterance randomly picked from a set of utterances for the given intent
+     */
     public Optional<String> getRandomUtterance(final String intentName) {
         return getRandomOf(getPhrasesForIntent(intentName, 0));
     }
 
+    /**
+     * Returns a set of reprompt utterances for an intent which is defined in the AlexaOutput.
+     * @param output The AlexaOutput containing the intent name whose reprompt utterances are to be returned.
+     * @return set of reprompt utterances for an intent which is defined in the AlexaOutput
+     */
     public List<String> getReprompts(final AlexaOutput output) {
         return getReprompts(output.getIntentName());
     }
 
+    /**
+     * Returns a reprompt utterance randomly picked from a set of reprompt utterances for an intent which is defined in the AlexaOutput.
+     * @param output The AlexaOutput containing the intent name.
+     * @return reprompt utterance randomly picked from a set of reprompt utterances for an intent which is defined in the AlexaOutput
+     */
     public Optional<String> getRandomReprompt(final AlexaOutput output) {
         return getRandomReprompt(output.getIntentName());
     }
 
+    /**
+     * Returns a set of reprompt utterances for a given intent.
+     * @param intentName the intent name whose reprompt utterances are to be returned
+     * @return set of reprompt utterances for the given intent
+     */
     public List<String> getReprompts(final String intentName) {
         return getPhrasesForIntent(intentName, 1);
     }
 
+    /**
+     * Returns a reprompt utterance randomly picked from a set of reprompt utterances for a given intent.
+     * @param intentName The intent name.
+     * @return reprompt utterance randomly picked from a set of reprompt utterances for the given intent
+     */
     public Optional<String> getRandomReprompt(final String intentName) {
         return getRandomOf(getPhrasesForIntent(intentName, 1));
     }

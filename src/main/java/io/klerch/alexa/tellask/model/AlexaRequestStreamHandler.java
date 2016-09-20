@@ -20,6 +20,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * An extended version of Lambda's RequestStreamHandler. You must provide some configuration
+ * to this class by either using the AlexaApplication-annotation or by overriding the getter methods.
+ * At least you must give it a supported application id otherwise all of the incoming requests will
+ * be rejected.
+ */
 public abstract class AlexaRequestStreamHandler implements RequestStreamHandler {
     /**
      * Provides a set of application-id(s) you can find in the Alexa developer console of your skill.
