@@ -83,7 +83,7 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
             return null;
         }
 
-        final String utteranceSsml = fillSlotsInUtterance(utterance);
+        final String utteranceSsml = resolveSlotsInUtterance(utterance);
 
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml(utteranceSsml);
@@ -100,7 +100,7 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         final String repromptSpeech = yamlReader.getRandomReprompt(output).orElse(null);
 
         if (repromptSpeech != null) {
-            final String utteranceSsml = fillSlotsInUtterance(repromptSpeech);
+            final String utteranceSsml = resolveSlotsInUtterance(repromptSpeech);
             final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
             outputSpeech.setSsml(utteranceSsml);
             final Reprompt reprompt = new Reprompt();
@@ -110,7 +110,7 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         return null;
     }
 
-    private String pickPhraseFromMultiPhraseCollection(final String utterance) {
+    private String resolveMultiPhraseCollections(final String utterance) {
         final StringBuffer buffer = new StringBuffer();
         // extract all the phrase collection (e.g. [Hello|Hi|Welcome] found in the utterance
         final Matcher multiPhrases = Pattern.compile("\\[(.*?)\\]").matcher(utterance);
@@ -129,9 +129,9 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(new Random().nextInt(list.size())));
     }
 
-    private String fillSlotsInUtterance(final String utterance) {
+    private String resolveSlotsInUtterance(final String utterance) {
         // first of all remove mutliphrases with randomly picked phrase out of these
-        final String cleanedUtterance = pickPhraseFromMultiPhraseCollection(utterance);
+        final String cleanedUtterance = resolveMultiPhraseCollections(utterance);
         final StringBuffer buffer = new StringBuffer();
         // extract all the placeholders found in the utterance
         final Matcher slots = Pattern.compile("\\{(.*?)\\}").matcher(cleanedUtterance);
