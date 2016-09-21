@@ -1,4 +1,4 @@
-package io.klerch.alexa.tellask.util;
+package io.klerch.alexa.tellask.util.resource;
 
 import io.klerch.alexa.tellask.schema.UtteranceReader;
 import org.apache.commons.lang3.Validate;
@@ -57,6 +57,14 @@ public class ResourceUtteranceReader implements UtteranceReader {
             sb.append("/");
 
         this.leadingPath = sb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getLeadingPath() {
+        return leadingPath;
     }
 
     /**

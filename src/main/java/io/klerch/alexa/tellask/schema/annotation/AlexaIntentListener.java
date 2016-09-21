@@ -1,4 +1,6 @@
-package io.klerch.alexa.tellask.schema;
+package io.klerch.alexa.tellask.schema.annotation;
+
+import io.klerch.alexa.tellask.schema.type.AlexaIntentType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

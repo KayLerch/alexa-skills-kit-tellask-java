@@ -1,4 +1,4 @@
-package io.klerch.alexa.tellask.model;
+package io.klerch.alexa.tellask.model.wrapper;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;

@@ -1,12 +1,15 @@
-package io.klerch.alexa.tellask.model;
+package io.klerch.alexa.tellask.model.wrapper;
 
 import com.amazon.speech.speechlet.*;
 import io.klerch.alexa.state.utils.AlexaStateException;
+import io.klerch.alexa.tellask.model.AlexaInput;
+import io.klerch.alexa.tellask.model.AlexaIntentModel;
+import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
 import io.klerch.alexa.tellask.schema.AlexaLaunchHandler;
 import io.klerch.alexa.tellask.schema.AlexaRequestHandler;
-import io.klerch.alexa.tellask.util.AlexaIntentHandlerFactory;
-import io.klerch.alexa.tellask.util.AlexaLaunchHandlerFactory;
+import io.klerch.alexa.tellask.util.factory.AlexaIntentHandlerFactory;
+import io.klerch.alexa.tellask.util.factory.AlexaLaunchHandlerFactory;
 import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
 import org.apache.log4j.Logger;
 
@@ -100,10 +103,14 @@ public class AlexaSpeechlet implements Speechlet {
                     new AlexaRequestHandlerException(e.getMessage(), e.getCause(), input, e.getErrorIntent()) : e;
             LOG.error("Error while handling an intent.", exception);
             response = new AlexaSpeechletResponse(handler.handleError(exception));
+        } catch (final AlexaStateException e) {
+            final AlexaRequestHandlerException exception = new AlexaRequestHandlerException("Error while handling state.", e, input, null);
+            LOG.error(exception);
+            response = new AlexaSpeechletResponse(handler.handleError(exception));
         } catch (final Exception e) {
-            LOG.error("Error while handling an intent.", e);
-            final AlexaRequestHandlerException e2 = new AlexaRequestHandlerException("General error occured.", e, input, null);
-            response = new AlexaSpeechletResponse(handler.handleError(e2));
+            final AlexaRequestHandlerException exception = new AlexaRequestHandlerException("General error occured.", e, input, null);
+            LOG.error(exception);
+            response = new AlexaSpeechletResponse(handler.handleError(exception));
         }
         return response;
     }

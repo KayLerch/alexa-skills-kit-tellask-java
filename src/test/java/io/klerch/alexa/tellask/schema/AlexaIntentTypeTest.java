@@ -1,10 +1,8 @@
 package io.klerch.alexa.tellask.schema;
 
-import org.apache.commons.lang3.EnumUtils;
+import io.klerch.alexa.tellask.schema.type.AlexaIntentType;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class AlexaIntentTypeTest {
     @Test

@@ -1,8 +1,8 @@
 package io.klerch.alexa.tellask.dummies;
 
-import io.klerch.alexa.tellask.model.AlexaRequestStreamHandler;
-import io.klerch.alexa.tellask.model.AlexaSpeechlet;
-import io.klerch.alexa.tellask.schema.AlexaApplication;
+import io.klerch.alexa.tellask.model.wrapper.AlexaRequestStreamHandler;
+import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
+import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;
 
 @AlexaApplication(applicationIds = "applicationId")
 public class SampleRequestStreamHandler extends AlexaRequestStreamHandler {

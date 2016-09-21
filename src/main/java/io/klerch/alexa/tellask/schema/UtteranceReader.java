@@ -13,6 +13,16 @@ import java.io.InputStream;
  */
 public interface UtteranceReader {
     /**
+     * Gets the leading path - the portion of the qualified path in front of
+     * the locale-directory. Note that a fully qualified path is a concatenation
+     * of the leading path (set in the constructor), the locale (given to the read-method)
+     * and the trailing path containing the actual file (can be overridden
+     * by setting resourceLocation). You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * @return the leading path
+     */
+    String getLeadingPath();
+
+    /**
      * Gets the trailing portion of the fully qualified path to the YAML file which
      * is read out for utterances. Note that a fully qualified path is a concatenation
      * of the leading path (set in the constructor), the locale (given to the read-method)

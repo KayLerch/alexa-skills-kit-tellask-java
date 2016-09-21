@@ -1,9 +1,11 @@
-package io.klerch.alexa.tellask.model;
+package io.klerch.alexa.tellask.model.wrapper;
 
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.amazon.speech.ui.StandardCard;
 import io.klerch.alexa.tellask.dummies.AlexaStateModelSample;
-import io.klerch.alexa.tellask.schema.AlexaOutputFormat;
+import io.klerch.alexa.tellask.model.AlexaOutput;
+import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechletResponse;
+import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

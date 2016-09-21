@@ -1,6 +1,6 @@
 package io.klerch.alexa.tellask.model;
 
-import io.klerch.alexa.tellask.schema.AlexaOutputFormat;
+import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Rule;

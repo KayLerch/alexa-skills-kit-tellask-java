@@ -1,7 +1,8 @@
-package io.klerch.alexa.tellask.util;
+package io.klerch.alexa.tellask.util.factory;
 
 import io.klerch.alexa.tellask.dummies.handler.LaunchHandler;
 import io.klerch.alexa.tellask.schema.AlexaLaunchHandler;
+import io.klerch.alexa.tellask.util.factory.AlexaLaunchHandlerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package io.klerch.alexa.tellask.model;
+package io.klerch.alexa.tellask.model.wrapper;
 
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.OutputSpeech;
@@ -6,7 +6,9 @@ import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.klerch.alexa.tellask.util.YamlReader;
+import io.klerch.alexa.tellask.model.AlexaOutput;
+import io.klerch.alexa.tellask.model.AlexaOutputSlot;
+import io.klerch.alexa.tellask.util.resource.YamlReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;

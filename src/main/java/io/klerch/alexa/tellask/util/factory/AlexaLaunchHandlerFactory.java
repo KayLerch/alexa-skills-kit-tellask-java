@@ -1,6 +1,5 @@
-package io.klerch.alexa.tellask.util;
+package io.klerch.alexa.tellask.util.factory;
 
-import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.schema.AlexaLaunchHandler;
 import org.apache.log4j.Logger;
 

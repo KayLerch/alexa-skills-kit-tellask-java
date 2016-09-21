@@ -1,6 +1,6 @@
-package io.klerch.alexa.tellask.schema;
+package io.klerch.alexa.tellask.schema.annotation;
 
-import io.klerch.alexa.tellask.model.AlexaSpeechlet;
+import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
 
 import java.lang.annotation.*;
 

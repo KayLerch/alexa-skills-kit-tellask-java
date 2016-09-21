@@ -3,8 +3,8 @@ package io.klerch.alexa.tellask.processor;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.*;
 import io.klerch.alexa.tellask.schema.AlexaLaunchHandler;
-import io.klerch.alexa.tellask.schema.AlexaLaunchListener;
-import io.klerch.alexa.tellask.util.AlexaLaunchHandlerFactory;
+import io.klerch.alexa.tellask.schema.annotation.AlexaLaunchListener;
+import io.klerch.alexa.tellask.util.factory.AlexaLaunchHandlerFactory;
 import org.apache.log4j.Logger;
 
 import javax.annotation.processing.*;

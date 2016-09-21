@@ -1,8 +1,8 @@
 package io.klerch.alexa.tellask.dummies;
 
 import io.klerch.alexa.state.model.AlexaStateModel;
-import io.klerch.alexa.tellask.schema.AlexaOutputFormat;
-import io.klerch.alexa.tellask.schema.AlexaSlotSave;
+import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
+import io.klerch.alexa.tellask.schema.annotation.AlexaSlotSave;
 
 public class AlexaStateModelSample extends AlexaStateModel {
     @AlexaSlotSave(slotName = "slot1")

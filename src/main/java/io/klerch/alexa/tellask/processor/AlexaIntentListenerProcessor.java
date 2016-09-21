@@ -4,9 +4,9 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.*;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
-import io.klerch.alexa.tellask.schema.AlexaIntentListener;
-import io.klerch.alexa.tellask.schema.AlexaIntentType;
-import io.klerch.alexa.tellask.util.AlexaIntentHandlerFactory;
+import io.klerch.alexa.tellask.schema.annotation.AlexaIntentListener;
+import io.klerch.alexa.tellask.schema.type.AlexaIntentType;
+import io.klerch.alexa.tellask.util.factory.AlexaIntentHandlerFactory;
 import org.apache.log4j.Logger;
 
 import javax.annotation.processing.*;

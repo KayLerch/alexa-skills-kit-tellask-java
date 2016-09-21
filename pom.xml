@@ -211,6 +211,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.google.testing.compile</groupId>
+            <artifactId>compile-testing</artifactId>
+            <version>0.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>
             <version>${auto-service-version}</version>

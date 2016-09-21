@@ -1,4 +1,4 @@
-package io.klerch.alexa.tellask.util;
+package io.klerch.alexa.tellask.util.resource;
 
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.schema.UtteranceReader;

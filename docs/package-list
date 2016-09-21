@@ -1,4 +1,9 @@
 io.klerch.alexa.tellask.model
+io.klerch.alexa.tellask.model.wrapper
 io.klerch.alexa.tellask.processor
 io.klerch.alexa.tellask.schema
+io.klerch.alexa.tellask.schema.annotation
+io.klerch.alexa.tellask.schema.type
 io.klerch.alexa.tellask.util
+io.klerch.alexa.tellask.util.factory
+io.klerch.alexa.tellask.util.resource

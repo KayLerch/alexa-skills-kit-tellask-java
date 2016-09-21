@@ -4,7 +4,7 @@ import io.klerch.alexa.state.handler.AlexaStateHandler;
 import io.klerch.alexa.state.model.AlexaStateIgnore;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.utils.AlexaStateException;
-import io.klerch.alexa.tellask.schema.AlexaSlotSave;
+import io.klerch.alexa.tellask.schema.annotation.AlexaSlotSave;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;

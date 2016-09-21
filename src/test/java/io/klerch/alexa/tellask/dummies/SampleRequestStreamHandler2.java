@@ -1,7 +1,7 @@
 package io.klerch.alexa.tellask.dummies;
 
-import io.klerch.alexa.tellask.model.AlexaRequestStreamHandler;
-import io.klerch.alexa.tellask.schema.AlexaApplication;
+import io.klerch.alexa.tellask.model.wrapper.AlexaRequestStreamHandler;
+import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;
 
 import java.util.Arrays;
 import java.util.Set;

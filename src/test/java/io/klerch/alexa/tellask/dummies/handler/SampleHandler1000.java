@@ -5,8 +5,8 @@ import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.model.AlexaOutputSlot;
 import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
-import io.klerch.alexa.tellask.schema.AlexaIntentListener;
-import io.klerch.alexa.tellask.schema.AlexaOutputFormat;
+import io.klerch.alexa.tellask.schema.annotation.AlexaIntentListener;
+import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
 import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
 
 @AlexaIntentListener(intentName = "IntentWithOneUtteranceAndOneReprompt", priority = 1000)

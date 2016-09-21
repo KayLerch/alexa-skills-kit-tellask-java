@@ -3,7 +3,7 @@ package io.klerch.alexa.tellask.dummies.handler;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.schema.AlexaLaunchHandler;
-import io.klerch.alexa.tellask.schema.AlexaLaunchListener;
+import io.klerch.alexa.tellask.schema.annotation.AlexaLaunchListener;
 import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
 
 @AlexaLaunchListener

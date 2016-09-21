@@ -1,15 +1,14 @@
-package io.klerch.alexa.tellask.util;
+package io.klerch.alexa.tellask.util.factory;
 
 import io.klerch.alexa.tellask.ModelFactory;
 import io.klerch.alexa.tellask.dummies.handler.SampleHandler1000;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
+import io.klerch.alexa.tellask.util.factory.AlexaIntentHandlerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 public class AlexaIntentHandlerFactoryTest {
     @Test

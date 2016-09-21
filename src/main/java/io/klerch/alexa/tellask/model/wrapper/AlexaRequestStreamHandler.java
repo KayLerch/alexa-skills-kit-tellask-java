@@ -1,4 +1,4 @@
-package io.klerch.alexa.tellask.model;
+package io.klerch.alexa.tellask.model.wrapper;
 
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletRequestHandler;
@@ -8,7 +8,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.klerch.alexa.tellask.schema.AlexaApplication;
+import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 

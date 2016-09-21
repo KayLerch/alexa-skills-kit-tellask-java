@@ -1,6 +1,8 @@
-package io.klerch.alexa.tellask.util;
+package io.klerch.alexa.tellask.util.resource;
 
 import io.klerch.alexa.tellask.ModelFactory;
+import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
+import io.klerch.alexa.tellask.util.resource.YamlReader;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

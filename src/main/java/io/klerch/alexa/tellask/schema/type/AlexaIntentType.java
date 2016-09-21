@@ -1,4 +1,4 @@
-package io.klerch.alexa.tellask.schema;
+package io.klerch.alexa.tellask.schema.type;
 
 /**
  * Enumeration of Alexa Intent types whose value is equal to the qualified

@@ -1,8 +1,7 @@
-package io.klerch.alexa.tellask.util;
+package io.klerch.alexa.tellask.util.resource;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.S3Object;
-import io.klerch.alexa.tellask.schema.UtteranceReader;
 import org.apache.commons.lang3.Validate;
 
 import java.io.InputStream;
@@ -17,26 +16,16 @@ import java.io.InputStream;
  * possible to provide utterances for different locales just by having those
  * files in the right place.
  */
-public class S3UtteranceReader implements UtteranceReader {
-    /**
-     * The default resource location. This is just the trailing portion of
-     * the qualified resource path.
-     */
-    public static final String DEFAULT_RESOURCE_LOCATION = "/utterances.yml";
+public class S3UtteranceReader extends ResourceUtteranceReader {
     private final AmazonS3Client s3Client;
     private final String bucketName;
-    private final String leadingPath;
-    private String resourceLocation = DEFAULT_RESOURCE_LOCATION;
 
     /**
      * A new S3 reader pointing to a bucket
      * @param bucketName name of the S3 bucket
      */
     public S3UtteranceReader(final String bucketName) {
-        // initializes an AWS client with default configuration obtained from environment
-        this.s3Client = new AmazonS3Client();
-        this.bucketName = bucketName;
-        this.leadingPath = "/";
+        this(new AmazonS3Client(), bucketName, "/");
     }
 
     /**
@@ -48,10 +37,7 @@ public class S3UtteranceReader implements UtteranceReader {
      * @param leadingPath valid path within the bucket
      */
     public S3UtteranceReader(final String bucketName, final String leadingPath) {
-        // initializes an AWS client with default configuration obtained from environment
-        this.s3Client = new AmazonS3Client();
-        this.bucketName = bucketName;
-        this.leadingPath = leadingPath;
+        this(new AmazonS3Client(), bucketName, leadingPath);
     }
 
     /**
@@ -64,40 +50,22 @@ public class S3UtteranceReader implements UtteranceReader {
      * @param bucketName name of the S3 bucket
      * @param leadingPath valid path within the bucket
      */
-    public S3UtteranceReader(final AmazonS3Client client, final String bucketName, String leadingPath) {
+    public S3UtteranceReader(final AmazonS3Client client, final String bucketName, final String leadingPath) {
+        super(leadingPath);
+
+        Validate.notNull(client, "S3 client must not be null.");
+        Validate.notBlank(bucketName, "Bucket name must not be blank.");
+
         this.s3Client = client;
         this.bucketName = bucketName;
-
-        final StringBuilder sb = new StringBuilder();
-
-        if (!leadingPath.startsWith("/"))
-            sb.append("/");
-
-        sb.append(leadingPath);
-
-        if (!leadingPath.endsWith("/"))
-            sb.append("/");
-
-        this.leadingPath = sb.toString();
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the name of the S3 bucket.
+     * @return name of the S3 bucket
      */
-    @Override
-    public String getResourceLocation() {
-        return this.resourceLocation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setResourceLocation(final String resourceLocation) {
-        Validate.notBlank(resourceLocation, "No resource location is set to read from.");
-        Validate.notBlank(resourceLocation.replace("/", ""), "No resource location is set to read from.");
-        Validate.isTrue(resourceLocation.endsWith(".yml"), "Resource location must end with .yml");
-        this.resourceLocation = resourceLocation.startsWith("/") ? resourceLocation : "/" + resourceLocation;
+    public String getBucketName() {
+        return this.bucketName;
     }
 
     /**
@@ -105,7 +73,8 @@ public class S3UtteranceReader implements UtteranceReader {
      */
     @Override
     public S3UtteranceReader fromResourceLocation(final String resourceLocation) {
-        return null;
+        setResourceLocation(resourceLocation);
+        return this;
     }
 
     /**
@@ -115,9 +84,10 @@ public class S3UtteranceReader implements UtteranceReader {
     public InputStream read(final String locale) {
         Validate.notNull(locale, "Locale must not be blank.");
 
-        final String resourcePath = leadingPath + locale + resourceLocation;
+        final String resourcePath = getLeadingPath() + locale + getResourceLocation();
 
         final S3Object s3Object = s3Client.getObject(bucketName, resourcePath);
+
         Validate.notNull(s3Object, "Resource " + resourcePath + " does not exist in bucket with name " + bucketName);
         return s3Object.getObjectContent();
     }

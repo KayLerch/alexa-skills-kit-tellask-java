@@ -1,4 +1,4 @@
-package io.klerch.alexa.tellask.schema;
+package io.klerch.alexa.tellask.schema.type;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package io.klerch.alexa.tellask.dummies;
 
-import io.klerch.alexa.tellask.model.AlexaSpeechlet;
+import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
 
 public class SampleAlexaSpeechlet extends AlexaSpeechlet {
     /**

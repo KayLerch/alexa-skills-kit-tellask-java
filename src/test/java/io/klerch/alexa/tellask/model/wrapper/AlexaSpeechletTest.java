@@ -1,13 +1,13 @@
-package io.klerch.alexa.tellask.model;
+package io.klerch.alexa.tellask.model.wrapper;
 
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletException;
-import com.amazon.speech.speechlet.SpeechletRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SsmlOutputSpeech;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import io.klerch.alexa.tellask.ModelFactory;
+import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
+import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechletResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,8 +16,6 @@ import org.junit.rules.ExpectedException;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class AlexaSpeechletTest {
     @Rule
