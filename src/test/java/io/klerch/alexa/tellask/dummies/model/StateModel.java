@@ -4,7 +4,7 @@
  * Attached license applies.
  * This library is licensed under GNU GENERAL PUBLIC LICENSE Version 3 as of 29 June 2007
  */
-package io.klerch.alexa.tellask.dummies;
+package io.klerch.alexa.tellask.dummies.model;
 
 import io.klerch.alexa.state.model.AlexaScope;
 import io.klerch.alexa.state.model.AlexaStateIgnore;

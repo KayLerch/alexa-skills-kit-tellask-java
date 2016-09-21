@@ -1,6 +1,6 @@
 package io.klerch.alexa.tellask.dummies.handler;
 
-import io.klerch.alexa.tellask.dummies.AlexaStateModelSample;
+import io.klerch.alexa.tellask.dummies.model.AlexaStateModelSample;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.model.AlexaOutputSlot;

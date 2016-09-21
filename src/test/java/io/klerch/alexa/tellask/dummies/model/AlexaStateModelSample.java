@@ -1,4 +1,4 @@
-package io.klerch.alexa.tellask.dummies;
+package io.klerch.alexa.tellask.dummies.model;
 
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;

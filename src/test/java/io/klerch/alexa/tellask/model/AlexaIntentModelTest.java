@@ -3,13 +3,12 @@ package io.klerch.alexa.tellask.model;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.tellask.ModelFactory;
-import io.klerch.alexa.tellask.dummies.AlexaStateModelSample;
-import io.klerch.alexa.tellask.dummies.StateModel;
+import io.klerch.alexa.tellask.dummies.model.AlexaStateModelSample;
+import io.klerch.alexa.tellask.dummies.model.StateModel;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 

@@ -1,5 +1,6 @@
-package io.klerch.alexa.tellask.dummies;
+package io.klerch.alexa.tellask.dummies.lambda;
 
+import io.klerch.alexa.tellask.dummies.SampleAlexaSpeechlet;
 import io.klerch.alexa.tellask.model.wrapper.AlexaRequestStreamHandler;
 import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
 import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;

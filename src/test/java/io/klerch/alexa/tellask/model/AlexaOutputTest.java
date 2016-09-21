@@ -2,7 +2,7 @@ package io.klerch.alexa.tellask.model;
 
 import com.amazon.speech.ui.StandardCard;
 import io.klerch.alexa.state.model.AlexaStateModel;
-import io.klerch.alexa.tellask.dummies.AlexaStateModelSample;
+import io.klerch.alexa.tellask.dummies.model.AlexaStateModelSample;
 import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
 import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
 import org.hamcrest.core.Is;

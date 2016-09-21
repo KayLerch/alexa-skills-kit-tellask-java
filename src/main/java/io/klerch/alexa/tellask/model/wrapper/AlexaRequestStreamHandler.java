@@ -9,6 +9,8 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;
+import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
+import io.klerch.alexa.tellask.util.factory.AlexaSpeechletFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -55,24 +57,15 @@ public abstract class AlexaRequestStreamHandler implements RequestStreamHandler 
      * handler having no public constructor taking a String containing the locale
      */
     @Override
-    public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
-        final ObjectMapper mapper = new ObjectMapper();
+    public void handleRequest(final InputStream input, final OutputStream output, final Context context) throws IOException {
         byte[] serializedSpeechletRequest = IOUtils.toByteArray(input);
-        final JsonNode parser = mapper.readTree(serializedSpeechletRequest);
-        final String locale = Optional.of(parser.path("request"))
-                .filter(node -> !node.isMissingNode())
-                .map(node -> node.path("locale"))
-                .filter(node -> !node.isMissingNode())
-                .map(JsonNode::textValue)
-                .orElse("en-US");
-
-        final Class<? extends AlexaSpeechlet> speechletClass = getSpeechlet();
+        final AlexaSpeechlet speechlet = AlexaSpeechletFactory.createSpeechletFromRequest(serializedSpeechletRequest, getSpeechlet());
+        final SpeechletRequestHandler handler = getRequestStreamHandler();
         try {
-            final AlexaSpeechlet speechlet = speechletClass.getConstructor(String.class).newInstance(locale);
-            final SpeechletRequestHandler handler = getRequestStreamHandler();
             byte[] outputBytes = handler.handleSpeechletCall(speechlet, serializedSpeechletRequest);
             output.write(outputBytes);
-        } catch (SpeechletRequestHandlerException | SpeechletException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (SpeechletRequestHandlerException | SpeechletException e) {
+            // wrap actual exception in expected IOException
             throw new IOException(e);
         }
     }
