@@ -11,6 +11,7 @@ package io.klerch.alexa.tellask.util.factory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
+import io.klerch.alexa.tellask.schema.UtteranceReader;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -27,11 +28,12 @@ public class AlexaSpeechletFactory {
      * locale from the request and uses it for creating a new instance of AlexaSpeechlet
      * @param serializedSpeechletRequest bytes of a speechlet request
      * @param speechletClass the class of your AlexaSpeechlet to instantiate
+     * @param utteranceReader the reader AlexaSpeechlet should use when reading out utterances
      * @param <T> must extend AlexaSpeechlet
      * @return new instance of AlexaSpeechlet
      * @throws IOException thrown when something went wrong
      */
-    public static <T extends AlexaSpeechlet> T createSpeechletFromRequest(final byte[] serializedSpeechletRequest, final Class<T> speechletClass) throws IOException {
+    public static <T extends AlexaSpeechlet> T createSpeechletFromRequest(final byte[] serializedSpeechletRequest, final Class<T> speechletClass, final UtteranceReader utteranceReader) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
 
         final JsonNode parser = mapper.readTree(serializedSpeechletRequest);
@@ -43,7 +45,7 @@ public class AlexaSpeechletFactory {
                 .orElse(DEFAULT_LOCALE);
 
         try {
-            return speechletClass.getConstructor(String.class).newInstance(locale);
+            return speechletClass.getConstructor(String.class, UtteranceReader.class).newInstance(locale, utteranceReader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new IOException("Could not create Speechlet from speechlet request", e);
         }

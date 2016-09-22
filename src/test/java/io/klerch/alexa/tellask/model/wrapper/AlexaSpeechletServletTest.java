@@ -19,6 +19,8 @@ import io.klerch.alexa.tellask.ModelFactory;
 import io.klerch.alexa.tellask.dummies.SampleAlexaSpeechlet;
 import io.klerch.alexa.tellask.dummies.servlet.SampleServlet;
 import io.klerch.alexa.tellask.dummies.servlet.SampleServlet2;
+import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
+import io.klerch.alexa.tellask.util.resource.S3UtteranceReader;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +55,15 @@ public class AlexaSpeechletServletTest {
         };
         when(response.getOutputStream()).thenReturn(servletOutputStream);
         return response;
+    }
+
+    @Test
+    public void getUtteranceReader() throws Exception {
+        final AlexaSpeechletServlet servlet = new SampleServlet();
+        Assert.assertTrue(servlet.getUtteranceReader() instanceof ResourceUtteranceReader);
+
+        final AlexaSpeechletServlet servlet2 = new SampleServlet2();
+        Assert.assertTrue(servlet2.getUtteranceReader() instanceof S3UtteranceReader);
     }
 
     @Test

@@ -18,6 +18,9 @@ import io.klerch.alexa.tellask.Assertions;
 import io.klerch.alexa.tellask.ModelFactory;
 import io.klerch.alexa.tellask.dummies.SampleAlexaSpeechlet;
 import io.klerch.alexa.tellask.dummies.lambda.SampleRequestStreamHandler;
+import io.klerch.alexa.tellask.dummies.lambda.SampleRequestStreamHandler2;
+import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
+import io.klerch.alexa.tellask.util.resource.S3UtteranceReader;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,11 +35,20 @@ import java.util.Map;
 
 public class AlexaRequestStreamHandlerTest {
     @Test
+    public void getUtteranceReader() throws Exception {
+        final SampleRequestStreamHandler handler = new SampleRequestStreamHandler();
+        Assert.assertTrue(handler.getUtteranceReader() instanceof ResourceUtteranceReader);
+
+        final SampleRequestStreamHandler2 handler2 = new SampleRequestStreamHandler2();
+        Assert.assertTrue(handler2.getUtteranceReader() instanceof S3UtteranceReader);
+    }
+
+    @Test
     public void getSupportedApplicationIds() throws Exception {
         final SampleRequestStreamHandler handler = new SampleRequestStreamHandler();
         Assert.assertTrue(handler.getSupportedApplicationIds().contains("applicationId"));
 
-        final SampleRequestStreamHandler handler2 = new SampleRequestStreamHandler();
+        final SampleRequestStreamHandler2 handler2 = new SampleRequestStreamHandler2();
         Assert.assertTrue(handler2.getSupportedApplicationIds().contains("applicationId"));
     }
 
@@ -45,7 +57,7 @@ public class AlexaRequestStreamHandlerTest {
         final SampleRequestStreamHandler handler = new SampleRequestStreamHandler();
         Assert.assertTrue(handler.getSpeechlet().equals(SampleAlexaSpeechlet.class));
 
-        final SampleRequestStreamHandler handler2 = new SampleRequestStreamHandler();
+        final SampleRequestStreamHandler2 handler2 = new SampleRequestStreamHandler2();
         Assert.assertTrue(handler2.getSpeechlet().equals(SampleAlexaSpeechlet.class));
     }
 

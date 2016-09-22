@@ -10,7 +10,9 @@ package io.klerch.alexa.tellask.dummies.servlet;
 
 import io.klerch.alexa.tellask.dummies.SampleAlexaSpeechlet;
 import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechletServlet;
+import io.klerch.alexa.tellask.schema.UtteranceReader;
 import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;
+import io.klerch.alexa.tellask.util.resource.S3UtteranceReader;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -21,5 +23,10 @@ public class SampleServlet2 extends AlexaSpeechletServlet {
     @Override
     public Set<String> getSupportedApplicationIds() {
         return Arrays.asList("applicationId").stream().collect(Collectors.toSet());
+    }
+
+    @Override
+    public UtteranceReader getUtteranceReader() {
+        return new S3UtteranceReader("bucketName");
     }
 }

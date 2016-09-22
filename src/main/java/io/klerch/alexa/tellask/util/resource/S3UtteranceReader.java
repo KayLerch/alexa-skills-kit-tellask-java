@@ -33,33 +33,56 @@ public class S3UtteranceReader extends ResourceUtteranceReader {
      * @param bucketName name of the S3 bucket
      */
     public S3UtteranceReader(final String bucketName) {
-        this(new AmazonS3Client(), bucketName, "/");
+        this(new AmazonS3Client(), bucketName, DEFAULT_LEADING_PATH, DEFAULT_RESOURCE_LOCATION);
     }
 
     /**
      * A new S3 reader pointing to a bucket and a leading path. Note that a
-     * fully qualified path is a concatenation of the leading path (by default "/" when not providing one),
-     * the locale (given to the read-method) and the trailing path containing the actual file (can be overridden
-     * by setting resourceLocation). You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * fully qualified path is a concatenation of the leading path (set in the constructor),
+     * the locale (given to the read-method) and the trailing resource location containing the actual filename (can be overridden
+     * by setting resourceLocation or providing the the constructor as well).
+     * You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * where "en-US" is the only portion you cannot influence as it comes with the locale of
+     * a speechlet request.
      * @param bucketName name of the S3 bucket
      * @param leadingPath valid path within the bucket
      */
     public S3UtteranceReader(final String bucketName, final String leadingPath) {
-        this(new AmazonS3Client(), bucketName, leadingPath);
+        this(new AmazonS3Client(), bucketName, leadingPath, DEFAULT_RESOURCE_LOCATION);
+    }
+
+    /**
+     * A new S3 reader pointing to a bucket and a leading path. Note that a
+     * fully qualified path is a concatenation of the leading path (set in the constructor),
+     * the locale (given to the read-method) and the trailing resource location containing the actual filename (can be overridden
+     * by setting resourceLocation or providing the the constructor as well).
+     * You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * where "en-US" is the only portion you cannot influence as it comes with the locale of
+     * a speechlet request.
+     * @param bucketName name of the S3 bucket
+     * @param leadingPath valid path within the bucket
+     * @param resourceLocation the resource location. must end with ".yml"
+     */
+    public S3UtteranceReader(final String bucketName, final String leadingPath, final String resourceLocation) {
+        this(new AmazonS3Client(), bucketName, leadingPath, resourceLocation);
     }
 
     /**
      * A new S3 reader pointing to a bucket and a leading path in it (if desired). For
      * reading from S3 it will use the S3 client you provide. Note that a
-     * fully qualified path is a concatenation of the leading path (by default "/" when not providing one),
-     * the locale (given to the read-method) and the trailing path containing the actual file (can be overridden
-     * by setting resourceLocation). You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * fully qualified path is a concatenation of the leading path (set in the constructor),
+     * the locale (given to the read-method) and the trailing resource location containing the actual filename (can be overridden
+     * by setting resourceLocation or providing the the constructor as well).
+     * You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * where "en-US" is the only portion you cannot influence as it comes with the locale of
+     * a speechlet request.
      * @param client S3 client to communicate with AWS SDK for S3
      * @param bucketName name of the S3 bucket
      * @param leadingPath valid path within the bucket
+     * @param resourceLocation the resource location. must end with ".yml"
      */
-    public S3UtteranceReader(final AmazonS3Client client, final String bucketName, final String leadingPath) {
-        super(leadingPath);
+    public S3UtteranceReader(final AmazonS3Client client, final String bucketName, final String leadingPath, final String resourceLocation) {
+        super(leadingPath, resourceLocation);
 
         Validate.notNull(client, "S3 client must not be null.");
         Validate.notBlank(bucketName, "Bucket name must not be blank.");

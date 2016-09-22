@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.model.AlexaOutputSlot;
+import io.klerch.alexa.tellask.schema.UtteranceReader;
 import io.klerch.alexa.tellask.util.resource.YamlReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -50,10 +51,13 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
      * (over the utterance reader) from which it picks randomly according to the
      * intent name also given by the AlexaOutput.
      * @param output the AlexaOutput
+     * @param utteranceReader the reader to use when reading utterances
      */
-    public AlexaSpeechletResponse(final AlexaOutput output) {
+    public AlexaSpeechletResponse(final AlexaOutput output, final UtteranceReader utteranceReader) {
+        // an utterance reader is picked (either from the output or the one given to this constructor)
+        final UtteranceReader utteranceReaderToUse = output.getUtteranceReader() != null ? output.getUtteranceReader() : utteranceReader;
         this.output = output;
-        this.yamlReader = new YamlReader(output.getUtteranceReader(), output.getLocale());
+        this.yamlReader = new YamlReader(utteranceReaderToUse, output.getLocale());
         this.setShouldEndSession(output.shouldEndSession());
         this.setCard(output.getCard());
         this.outputSpeech = getOutputSpeech();

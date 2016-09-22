@@ -16,6 +16,7 @@ import com.amazon.speech.ui.SsmlOutputSpeech;
 import io.klerch.alexa.tellask.ModelFactory;
 import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
 import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechletResponse;
+import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,7 +35,7 @@ public class AlexaSpeechletTest {
 
     @Before
     public void init() {
-        speechlet = new AlexaSpeechlet("en-US");
+        speechlet = new AlexaSpeechlet("en-US", new ResourceUtteranceReader());
         session = ModelFactory.givenSession();
     }
 

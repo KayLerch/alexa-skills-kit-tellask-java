@@ -11,8 +11,10 @@ package io.klerch.alexa.tellask.model.wrapper;
 import com.amazon.speech.Sdk;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.servlet.SpeechletServlet;
+import io.klerch.alexa.tellask.schema.UtteranceReader;
 import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;
 import io.klerch.alexa.tellask.util.factory.AlexaSpeechletFactory;
+import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -74,6 +76,18 @@ public abstract class AlexaSpeechletServlet extends SpeechletServlet {
     }
 
     /**
+     * Override this method to return a customized utterance-reader. This gives
+     * you freedom of storing your utterance YAML files at any location you desire.
+     * If you want to decide how to configure an utterance reader individually you
+     * can set it inside your request handlers by giving it to AlexaOutput. That said
+     * the value you set right here could be overridden.
+     * @return customized utterance reader
+     */
+    public UtteranceReader getUtteranceReader() {
+        return new ResourceUtteranceReader();
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -101,7 +115,7 @@ public abstract class AlexaSpeechletServlet extends SpeechletServlet {
         final AlexaHttpServletRequest wrapper = new AlexaHttpServletRequest(request);
         // intervene post to extract locale but also to override the speechlet
         byte[] serializedSpeechletRequest = IOUtils.toByteArray(wrapper.getInputStream());
-        final AlexaSpeechlet speechlet = AlexaSpeechletFactory.createSpeechletFromRequest(serializedSpeechletRequest, getAlexaSpeechlet());
+        final AlexaSpeechlet speechlet = AlexaSpeechletFactory.createSpeechletFromRequest(serializedSpeechletRequest, getAlexaSpeechlet(), getUtteranceReader());
         // override speechlet with AlexaSpeechlet
         setSpeechlet(speechlet);
         super.doPost(wrapper, response);

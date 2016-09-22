@@ -16,9 +16,11 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.klerch.alexa.tellask.schema.UtteranceReader;
 import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;
 import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
 import io.klerch.alexa.tellask.util.factory.AlexaSpeechletFactory;
+import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -48,6 +50,18 @@ public abstract class AlexaRequestStreamHandler implements RequestStreamHandler 
     }
 
     /**
+     * Override this method to return a customized utterance-reader. This gives
+     * you freedom of storing your utterance YAML files at any location you desire.
+     * If you want to decide how to configure an utterance reader individually you
+     * can set it inside your request handlers by giving it to AlexaOutput. That said
+     * the value you set right here could be overridden.
+     * @return customized utterance reader
+     */
+    public UtteranceReader getUtteranceReader() {
+        return new ResourceUtteranceReader();
+    }
+
+    /**
      * Provides the speechlet used to handle the request.
      * @return speechlet used to handle the request.
      */
@@ -67,7 +81,7 @@ public abstract class AlexaRequestStreamHandler implements RequestStreamHandler 
     @Override
     public void handleRequest(final InputStream input, final OutputStream output, final Context context) throws IOException {
         byte[] serializedSpeechletRequest = IOUtils.toByteArray(input);
-        final AlexaSpeechlet speechlet = AlexaSpeechletFactory.createSpeechletFromRequest(serializedSpeechletRequest, getSpeechlet());
+        final AlexaSpeechlet speechlet = AlexaSpeechletFactory.createSpeechletFromRequest(serializedSpeechletRequest, getSpeechlet(), getUtteranceReader());
         final SpeechletRequestHandler handler = getRequestStreamHandler();
         try {
             byte[] outputBytes = handler.handleSpeechletCall(speechlet, serializedSpeechletRequest);

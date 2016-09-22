@@ -43,12 +43,12 @@ public class S3UtteranceReaderTest extends UtteranceReaderTest<S3UtteranceReader
 
     @Override
     S3UtteranceReader givenReader() throws Exception {
-        return new S3UtteranceReader(givenS3Mock(), "bucketName", "/");
+        return new S3UtteranceReader(givenS3Mock(), "bucketName", S3UtteranceReader.DEFAULT_LEADING_PATH, S3UtteranceReader.DEFAULT_RESOURCE_LOCATION);
     }
 
     @Override
     S3UtteranceReader givenReaderWithLeadingPath(String leadingPath) throws Exception {
-        return new S3UtteranceReader(givenS3Mock(), "bucketName", leadingPath);
+        return new S3UtteranceReader(givenS3Mock(), "bucketName", leadingPath, S3UtteranceReader.DEFAULT_RESOURCE_LOCATION);
     }
 
     @Test
@@ -60,11 +60,12 @@ public class S3UtteranceReaderTest extends UtteranceReaderTest<S3UtteranceReader
         Assert.assertEquals("bucketName", reader2.getBucketName());
         Assert.assertEquals("/leading/path/", reader2.getLeadingPath());
 
-        final S3UtteranceReader reader3 = new S3UtteranceReader("bucketName", "leading/path");
+        final S3UtteranceReader reader3 = new S3UtteranceReader("bucketName", "leading/path", "trailing/test.yml");
         Assert.assertEquals("bucketName", reader3.getBucketName());
         Assert.assertEquals("/leading/path/", reader3.getLeadingPath());
+        Assert.assertEquals("/trailing/test.yml", reader3.getResourceLocation());
 
-        exception.expect(NullPointerException.class);
+        exception.expect(IllegalArgumentException.class);
         new S3UtteranceReader(null, "bucketName", "leadingPath");
 
         exception.expect(IllegalArgumentException.class);
@@ -74,6 +75,6 @@ public class S3UtteranceReaderTest extends UtteranceReaderTest<S3UtteranceReader
         new S3UtteranceReader("", "leadingPath");
 
         exception.expect(IllegalArgumentException.class);
-        new S3UtteranceReader(new AmazonS3Client(), "", "leadingPath");
+        new S3UtteranceReader(new AmazonS3Client(), "", "leadingPath", S3UtteranceReader.DEFAULT_RESOURCE_LOCATION);
     }
 }

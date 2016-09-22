@@ -105,8 +105,13 @@ public class AlexaOutput {
 
     /**
      * The utterance reader is an implementation of logic reading utterances
-     * from a store - likely a file sitting somewhere
-     * @return The utterance reader implementation
+     * from a store - likely a file sitting somewhere. This value (if set)
+     * will override the reader configuration you might have done in either
+     * the Lambda stream handler or the servlet. This getter will not return
+     * the reader given in aforementioned configuration but only the reader
+     * you provided on construction of this AlexaOutput.
+     * @return The utterance reader implementation which will override the reader
+     * eventually set in the Lambda stream handler or servlet.
      */
     public UtteranceReader getUtteranceReader() {
         return utteranceReader;
@@ -153,7 +158,7 @@ public class AlexaOutput {
         private List<AlexaIntentModel> models = new ArrayList<>();
         private List<AlexaOutputSlot> slots = new ArrayList<>();
         private Card card;
-        private UtteranceReader utteranceReader = new ResourceUtteranceReader();
+        private UtteranceReader utteranceReader;
         private String locale = AlexaOutput.DEFAULT_LOCALE;
 
         private Predicate<AlexaStateModel> notExists = (final AlexaStateModel model) ->
@@ -271,7 +276,9 @@ public class AlexaOutput {
          * The utterance reader is an implementation of logic reading utterances
          * from a store - likely a file sitting somewhere. By default AlexaOutput will
          * be associated with the ResourceUtteranceReader loading utterances from YAML
-         * files in your /resources/{locale}/utterances.yml
+         * files in your /resources/{locale}/utterances.yml. If you override the reader
+         * in here it might also override the reader configuration you already made in
+         * the Lambda stream handler or in the servlet.
          * @param reader The utterance reader implementation of your desire
          * @return the AlexaOutput builder
          */
@@ -286,7 +293,6 @@ public class AlexaOutput {
          */
         public AlexaOutput build() {
             Validate.notBlank(intentName, "Intent name must not be blank.");
-            Validate.notNull(utteranceReader, "Utterance-reader must not be null.");
             Validate.notBlank(locale, "Locale must not be blank.");
             return new AlexaOutput(this);
         }

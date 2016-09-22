@@ -32,27 +32,55 @@ public class ResourceUtteranceReader implements UtteranceReader {
      * the qualified resource path.
      */
     public static final String DEFAULT_RESOURCE_LOCATION = "/utterances.yml";
+    /**
+     * The default leading path. This is the portion in front of the locale
+     * folder.
+     */
+    public static final String DEFAULT_LEADING_PATH = "/";
     private final String leadingPath;
     private String resourceLocation = DEFAULT_RESOURCE_LOCATION;
 
     /**
      * New reader for classloader-resources. Note that a
-     * fully qualified path is a concatenation of the leading path (by default "/" when not providing one),
-     * the locale (given to the read-method) and the trailing path containing the actual file (can be overridden
-     * by setting resourceLocation). You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * fully qualified path is a concatenation of the leading path (set in the constructor),
+     * the locale (given to the read-method) and the trailing resource location containing the actual filename (can be overridden
+     * by setting resourceLocation or providing the the constructor as well).
+     * You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * where "en-US" is the only portion you cannot influence as it comes with the locale of
+     * a speechlet request.
      */
     public ResourceUtteranceReader() {
-        this.leadingPath = "/";
+        this(DEFAULT_LEADING_PATH, DEFAULT_RESOURCE_LOCATION);
     }
 
     /**
      * New reader for classloader-resources giving it a valid leading path. Note that a
      * fully qualified path is a concatenation of the leading path (set in the constructor),
-     * the locale (given to the read-method) and the trailing path containing the actual file (can be overridden
-     * by setting resourceLocation). You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml.
+     * the locale (given to the read-method) and the trailing resource location containing the actual filename (can be overridden
+     * by setting resourceLocation or providing the the constructor as well).
+     * You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * where "en-US" is the only portion you cannot influence as it comes with the locale of
+     * a speechlet request.
      * @param leadingPath leading path to the actual resource (YAML) file
      */
     public ResourceUtteranceReader(final String leadingPath) {
+        this(leadingPath, DEFAULT_RESOURCE_LOCATION);
+    }
+
+    /**
+     * New reader for classloader-resources giving it a valid leading path. Note that a
+     * fully qualified path is a concatenation of the leading path (set in the constructor),
+     * the locale (given to the read-method) and the trailing resource location containing the actual filename (can be overridden
+     * by setting resourceLocation or providing the the constructor as well).
+     * You may end up with something like /my/leading/path/en-US/my/trailing/path/utterances.yml
+     * where "en-US" is the only portion you cannot influence as it comes with the locale of
+     * a speechlet request.
+     * @param leadingPath leading path to the actual resource (YAML) file
+     * @param resourceLocation the resource location. must end with ".yml"
+     */
+    public ResourceUtteranceReader(final String leadingPath, final String resourceLocation) {
+        setResourceLocation(resourceLocation);
+
         Validate.notBlank(leadingPath, "Leading path for utterance resource must not be blank. At least give it a '/'");
         final StringBuilder sb = new StringBuilder();
 

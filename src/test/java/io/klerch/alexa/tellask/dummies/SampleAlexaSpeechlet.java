@@ -9,6 +9,7 @@
 package io.klerch.alexa.tellask.dummies;
 
 import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
+import io.klerch.alexa.tellask.schema.UtteranceReader;
 
 public class SampleAlexaSpeechlet extends AlexaSpeechlet {
     /**
@@ -16,7 +17,7 @@ public class SampleAlexaSpeechlet extends AlexaSpeechlet {
      *
      * @param locale the locale provided by the speechlet request
      */
-    public SampleAlexaSpeechlet(String locale) {
-        super(locale);
+    public SampleAlexaSpeechlet(String locale, UtteranceReader reader) {
+        super(locale, reader);
     }
 }
