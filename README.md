@@ -28,7 +28,7 @@ in any situation.
 ## How to use
 
 Learn how to use this SDK by having a look into the samples -
- where you can find reference implementations for a multi-language skill.
+ where you can find reference implementations for a multi-language skills.
 
 Before you start make sure your IDE is set up for annotation processing. (How to for
 [IDEA](https://www.jetbrains.com/help/idea/2016.2/configuring-annotation-processing.html) and [Eclipse](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Fguide%2Fjdt_apt_getting_started.htm))
