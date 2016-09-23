@@ -44,8 +44,8 @@ public class AlexaInputTest {
         final AlexaInput input = new AlexaInput(request, session, LOCALE);
 
         Assert.assertEquals(request, input.getRequest());
-        Assert.assertNotNull(input.getSessionHandler());
-        Assert.assertEquals(session, input.getSessionHandler().getSession());
+        Assert.assertNotNull(input.getSessionStateHandler());
+        Assert.assertEquals(session, input.getSessionStateHandler().getSession());
     }
 
     @Test
@@ -55,8 +55,8 @@ public class AlexaInputTest {
         final AlexaInput input = new AlexaInput(request, session, LOCALE);
 
         Assert.assertEquals(request, input.getRequest());
-        Assert.assertNotNull(input.getSessionHandler());
-        Assert.assertEquals(session, input.getSessionHandler().getSession());
+        Assert.assertNotNull(input.getSessionStateHandler());
+        Assert.assertEquals(session, input.getSessionStateHandler().getSession());
     }
 
     @Test

@@ -6,7 +6,7 @@
 
     <groupId>io.klerch</groupId>
     <artifactId>alexa-skills-kit-tellask-java</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
 
     <name>Alexa Skills Kit Tellask SDK for Java</name>

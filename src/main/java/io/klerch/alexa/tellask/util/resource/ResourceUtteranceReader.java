@@ -12,6 +12,7 @@ import io.klerch.alexa.tellask.schema.UtteranceReader;
 import org.apache.commons.lang3.Validate;
 
 import java.io.InputStream;
+import java.net.URL;
 
 /**
  * An implementation to the UtteranceReader interface which encapsulates
@@ -81,13 +82,9 @@ public class ResourceUtteranceReader implements UtteranceReader {
     public ResourceUtteranceReader(final String leadingPath, final String resourceLocation) {
         setResourceLocation(resourceLocation);
 
-        Validate.notBlank(leadingPath, "Leading path for utterance resource must not be blank. At least give it a '/'");
         final StringBuilder sb = new StringBuilder();
 
-        if (!leadingPath.startsWith("/"))
-            sb.append("/");
-
-        sb.append(leadingPath);
+        sb.append(leadingPath.startsWith("/") ? leadingPath.substring(1) : leadingPath);
 
         if (!leadingPath.endsWith("/"))
             sb.append("/");
@@ -136,12 +133,15 @@ public class ResourceUtteranceReader implements UtteranceReader {
      */
     @Override
     public InputStream read(final String locale) {
-        Validate.notNull(locale, "Local must not be blank.");
+        Validate.notNull(locale, "Locale must not be blank.");
 
         final String resourcePath = leadingPath + locale + resourceLocation;
+        final String resourcePath2 = resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
 
-        Validate.notNull(ClassLoader.class.getResource(resourcePath), "Resource " + resourcePath + " does not exist in current context.");
+        final ClassLoader cl = getClass().getClassLoader();
 
-        return ClassLoader.class.getResourceAsStream(resourcePath);
+        Validate.notNull(cl.getResource(resourcePath2), "Resource " + resourcePath2 + " does not exist in current context.");
+
+        return cl.getResourceAsStream(resourcePath2);
     }
 }

@@ -16,7 +16,6 @@ public class AlexaIntentTypeTest {
     @Test
     public void getName() throws Exception {
         Assert.assertEquals("AMAZON.CancelIntent", AlexaIntentType.INTENT_CANCEL.getName());
-        Assert.assertEquals("", AlexaIntentType.INTENT_CUSTOM.getName());
         Assert.assertEquals("AMAZON.HelpIntent", AlexaIntentType.INTENT_HELP.getName());
         Assert.assertEquals("AMAZON.NextIntent", AlexaIntentType.INTENT_NEXT.getName());
         Assert.assertEquals("AMAZON.NoIntent", AlexaIntentType.INTENT_NO.getName());
@@ -25,5 +24,4 @@ public class AlexaIntentTypeTest {
         Assert.assertEquals("AMAZON.StopIntent", AlexaIntentType.INTENT_STOP.getName());
         Assert.assertEquals("AMAZON.YesIntent", AlexaIntentType.INTENT_YES.getName());
     }
-
 }

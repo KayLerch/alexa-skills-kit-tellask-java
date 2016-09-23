@@ -17,7 +17,7 @@ import io.klerch.alexa.tellask.schema.annotation.AlexaIntentListener;
 import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
 import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
 
-@AlexaIntentListener(intentName = "IntentWithOneUtteranceAndOneReprompt", priority = 1000)
+@AlexaIntentListener(customIntents = "IntentWithOneUtteranceAndOneReprompt", priority = 1000)
 public class SampleHandler1000 implements AlexaIntentHandler {
     @Override
     public boolean verify(AlexaInput alexaInput) {

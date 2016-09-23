@@ -10,6 +10,7 @@ package io.klerch.alexa.tellask.util.factory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.klerch.alexa.state.handler.AlexaStateHandler;
 import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
 import io.klerch.alexa.tellask.schema.UtteranceReader;
 
@@ -45,7 +46,8 @@ public class AlexaSpeechletFactory {
                 .orElse(DEFAULT_LOCALE);
 
         try {
-            return speechletClass.getConstructor(String.class, UtteranceReader.class).newInstance(locale, utteranceReader);
+            return speechletClass.getConstructor(String.class, UtteranceReader.class)
+                    .newInstance(locale, utteranceReader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new IOException("Could not create Speechlet from speechlet request", e);
         }

@@ -20,7 +20,7 @@ import java.io.InputStream;
 public abstract class UtteranceReaderTest<READER extends UtteranceReader> {
     private READER reader;
     public static final String LOCALE = "en-US";
-    private static final String leadingPath = "/my/leading/path/";
+    private static final String leadingPath = "my/leading/path/";
     private static final String trailingPath = "/my/trailing/path/utterances.yml";
 
     abstract READER givenReader() throws Exception;

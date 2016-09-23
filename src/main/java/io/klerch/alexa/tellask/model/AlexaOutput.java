@@ -25,10 +25,6 @@ import java.util.function.Predicate;
  * The AlexaOutput provides all the information necessary to generate the speechlet response.
  */
 public class AlexaOutput {
-    /**
-     * The default locale used when no locale is provided in the speechlet request
-     */
-    public static final String DEFAULT_LOCALE = "en-US";
     private String intentName;
     private Boolean shouldEndSession;
     private Boolean shouldReprompt;
@@ -159,7 +155,7 @@ public class AlexaOutput {
         private List<AlexaOutputSlot> slots = new ArrayList<>();
         private Card card;
         private UtteranceReader utteranceReader;
-        private String locale = AlexaOutput.DEFAULT_LOCALE;
+        private String locale;
 
         private Predicate<AlexaStateModel> notExists = (final AlexaStateModel model) ->
                 !(this.models.stream().anyMatch(m -> m.getModel().equals(model)));
@@ -293,7 +289,6 @@ public class AlexaOutput {
          */
         public AlexaOutput build() {
             Validate.notBlank(intentName, "Intent name must not be blank.");
-            Validate.notBlank(locale, "Locale must not be blank.");
             return new AlexaOutput(this);
         }
     }

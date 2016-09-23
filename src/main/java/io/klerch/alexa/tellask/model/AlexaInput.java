@@ -13,20 +13,19 @@ import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletRequest;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
+import io.klerch.alexa.state.handler.AlexaStateHandler;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-
-import java.io.Serializable;
 
 /**
  * This is the input for an intent request handing in all necessary information
  * for handling the intent properly. Its counterpart is the AlexaOutput object.
  */
 public class AlexaInput {
-    private final AlexaSessionStateHandler sessionHandler;
-    private final IntentRequest intentRequest;
-    private final LaunchRequest launchRequest;
+    private final AlexaStateHandler sessionStateHandler;
+    private IntentRequest intentRequest;
+    private LaunchRequest launchRequest;
     private final String locale;
 
     /**
@@ -36,10 +35,8 @@ public class AlexaInput {
      * @param locale the locale of the request
      */
     public AlexaInput(final IntentRequest request, final Session session, final String locale) {
-        this.sessionHandler = new AlexaSessionStateHandler(session);
-        this.intentRequest = request;
+        this(session, locale);this.intentRequest = request;
         this.launchRequest = null;
-        this.locale = locale;
     }
 
     /**
@@ -49,9 +46,14 @@ public class AlexaInput {
      * @param locale the locale of the request
      */
     public AlexaInput(final LaunchRequest request, final Session session, final String locale) {
-        this.sessionHandler = new AlexaSessionStateHandler(session);
+        this(session, locale);
         this.intentRequest = null;
         this.launchRequest = request;
+
+    }
+
+    private AlexaInput(final Session session, final String locale) {
+        this.sessionStateHandler = new AlexaSessionStateHandler(session);
         this.locale = locale;
     }
 
@@ -67,8 +69,8 @@ public class AlexaInput {
      * Returns the SessionHandler for reading state from and writing state to the session object
      * @return SessionHandler for current session.
      */
-    public AlexaSessionStateHandler getSessionHandler() {
-        return sessionHandler;
+    public AlexaStateHandler getSessionStateHandler() {
+        return sessionStateHandler;
     }
 
     /**

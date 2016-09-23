@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AlexaRequestStreamHandlerTest {
+
     @Test
     public void getUtteranceReader() throws Exception {
         final SampleRequestStreamHandler handler = new SampleRequestStreamHandler();

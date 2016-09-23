@@ -58,11 +58,11 @@ public class S3UtteranceReaderTest extends UtteranceReaderTest<S3UtteranceReader
 
         final S3UtteranceReader reader2 = new S3UtteranceReader("bucketName", "/leading/path/");
         Assert.assertEquals("bucketName", reader2.getBucketName());
-        Assert.assertEquals("/leading/path/", reader2.getLeadingPath());
+        Assert.assertEquals("leading/path/", reader2.getLeadingPath());
 
         final S3UtteranceReader reader3 = new S3UtteranceReader("bucketName", "leading/path", "trailing/test.yml");
         Assert.assertEquals("bucketName", reader3.getBucketName());
-        Assert.assertEquals("/leading/path/", reader3.getLeadingPath());
+        Assert.assertEquals("leading/path/", reader3.getLeadingPath());
         Assert.assertEquals("/trailing/test.yml", reader3.getResourceLocation());
 
         exception.expect(IllegalArgumentException.class);

@@ -52,12 +52,13 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
      * intent name also given by the AlexaOutput.
      * @param output the AlexaOutput
      * @param utteranceReader the reader to use when reading utterances
+     * @param locale the locale to use if output does not provide one
      */
-    public AlexaSpeechletResponse(final AlexaOutput output, final UtteranceReader utteranceReader) {
+    public AlexaSpeechletResponse(final AlexaOutput output, final UtteranceReader utteranceReader, final String locale) {
         // an utterance reader is picked (either from the output or the one given to this constructor)
         final UtteranceReader utteranceReaderToUse = output.getUtteranceReader() != null ? output.getUtteranceReader() : utteranceReader;
         this.output = output;
-        this.yamlReader = new YamlReader(utteranceReaderToUse, output.getLocale());
+        this.yamlReader = new YamlReader(utteranceReaderToUse, output.getLocale() != null ? output.getLocale() : locale);
         this.setShouldEndSession(output.shouldEndSession());
         this.setCard(output.getCard());
         this.outputSpeech = getOutputSpeech();

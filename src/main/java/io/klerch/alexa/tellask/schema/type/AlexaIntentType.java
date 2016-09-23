@@ -44,7 +44,7 @@ public enum AlexaIntentType {
     /**
      * User confirms to a question in a certain context.
      */
-    INTENT_YES("AMAZON.YesIntent"),
+    INTENT_YES("AMAZON.YesIntent");
     /*
     new intents won't be supported unless Skills Kit SDK cannot handle missing session
 
@@ -55,11 +55,6 @@ public enum AlexaIntentType {
     INTENT_RESUME("AMAZON.ResumeIntent"),
     INTENT_SHUFFLE_OFF("AMAZON.ShuffleOffIntent"),
     INTENT_SHUFFLE_ON("AMAZON.ShuffleOnIntent"),*/
-    /**
-     * User kicks off a custom intent with an utterance. Don't forget to provide
-     * the custom intent-name.
-     */
-    INTENT_CUSTOM("");
 
     private String name;
 

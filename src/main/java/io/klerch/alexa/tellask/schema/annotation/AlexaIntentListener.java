@@ -27,13 +27,13 @@ public @interface AlexaIntentListener {
      * Defines the type of intent to listen for. Default is custom intent.
      * @return type of intent to listen for
      */
-    AlexaIntentType intentType() default AlexaIntentType.INTENT_CUSTOM;
+    AlexaIntentType[] builtInIntents() default {};
 
     /**
      * Defines the name of an intent. Only applies if intentType is set to custom (by default)
      * @return Defines the name of an intent. By default this name is blank.
      */
-    String intentName() default "";
+    String[] customIntents() default {};
 
     /**
      * Defines the priority among intent handlers listen for the same intent. The AlexaIntentHandler

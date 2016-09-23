@@ -26,10 +26,10 @@ public class AlexaSpeechletResponseTest {
     @Test
     public void contruct() throws Exception {
         exception.expect(NullPointerException.class);
-        new AlexaSpeechletResponse(null, new ResourceUtteranceReader());
+        new AlexaSpeechletResponse(null, new ResourceUtteranceReader(), "en-US");
 
         exception.expect(NullPointerException.class);
-        new AlexaSpeechletResponse(AlexaOutput.ask("someIntent").build(), null);
+        new AlexaSpeechletResponse(AlexaOutput.ask("someIntent").build(), null, "en-US");
     }
 
     @Test
@@ -43,7 +43,7 @@ public class AlexaSpeechletResponseTest {
                 .putSlot("credits", 123, AlexaOutputFormat.NUMBER)
                 .putState(model).build();
 
-        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader());
+        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader(), "en-US");
         Assert.assertEquals(output, response.getOutput());
         Assert.assertNotNull(response.getReprompt());
     }
@@ -58,7 +58,7 @@ public class AlexaSpeechletResponseTest {
                 .putSlot("credits", 123, AlexaOutputFormat.NUMBER)
                 .putState(model).build();
 
-        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader());
+        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader(), "en-US");
         Assert.assertEquals(output, response.getOutput());
         Assert.assertEquals("<speak>Hello <say-as interpret-as=\"spell-out\">Paul</say-as>. Your current score is <say-as interpret-as=\"number\">123</say-as></speak>",
                 ((SsmlOutputSpeech)response.getOutputSpeech()).getSsml());
@@ -72,7 +72,7 @@ public class AlexaSpeechletResponseTest {
                 .withReprompt(true)
                 .build();
 
-        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader());
+        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader(), "en-US");
         Assert.assertNotNull(response.getReprompt());
         Assert.assertEquals("<speak>Hello again</speak>",
                 ((SsmlOutputSpeech)response.getReprompt().getOutputSpeech()).getSsml());
@@ -86,7 +86,7 @@ public class AlexaSpeechletResponseTest {
                 .withCard(card)
                 .build();
 
-        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader());
+        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader(), "en-US");
         Assert.assertEquals(card, response.getCard());
     }
 
@@ -95,7 +95,7 @@ public class AlexaSpeechletResponseTest {
         final AlexaOutput output = AlexaOutput
                 .ask("IntentWithNoSlots").build();
 
-        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader());
+        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader(), "en-US");
         Assert.assertEquals(output, response.getOutput());
         Assert.assertEquals("<speak>Hello there</speak>",
                 ((SsmlOutputSpeech)response.getOutputSpeech()).getSsml());
@@ -107,6 +107,6 @@ public class AlexaSpeechletResponseTest {
                 .ask("IntentWithOneUtteranceAndOneReprompt").build();
 
         exception.expect(NullPointerException.class);
-        new AlexaSpeechletResponse(output, new ResourceUtteranceReader());
+        new AlexaSpeechletResponse(output, new ResourceUtteranceReader(), "en-US");
     }
 }

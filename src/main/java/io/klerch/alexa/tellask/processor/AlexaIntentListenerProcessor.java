@@ -47,21 +47,28 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
     private ProcessingEnvironment processingEnvironment;
 
     private Function<TypeElement, CodeBlock> generateCode = (final TypeElement element) -> {
-        // the intent type comes from the annotation
-        final AlexaIntentType intentType = element.getAnnotation(AlexaIntentListener.class).intentType();
+        // get custom intents to listen for
+        final List<String> intents = Arrays.stream(element.getAnnotation(AlexaIntentListener.class).customIntents()).collect(Collectors.toList());
 
-        // do only consider intent name if custom intent set, otherwise pick name coming from enum
-        final String intentName = AlexaIntentType.INTENT_CUSTOM.equals(intentType) ?
-                element.getAnnotation(AlexaIntentListener.class).intentName() : intentType.getName();
+        // join with built-in intents to listen for
+        Arrays.asList(element.getAnnotation(AlexaIntentListener.class).builtInIntents())
+                .stream()
+                .map(AlexaIntentType::getName)
+                .forEach(intents::add);
 
         final ClassName handlerClass = ClassName.get(element);
 
+        final String intentNames = String.join(", ",
+                intents.stream()
+                        .map(name -> "\"" + name + "\"")
+                        .collect(Collectors.toList()));
+
         // an if-statement checks for the intent-name and returns an instance of the corresponding handler
-        return CodeBlock.of("if($S.equals(input.getIntentName()))" +
+        return CodeBlock.of("if(java.util.Arrays.asList(" + intentNames + ").contains(intentName))" +
                 "{" +
                 "final " + AlexaIntentHandler.class.getSimpleName() + " handler = new $T();" +
                 "if (handler.verify(input)) return handler;" +
-                "}", intentName, handlerClass);
+                "}", handlerClass);
     };
 
     private Predicate<TypeElement> isConcretePublicClass = (final TypeElement t) -> {
@@ -129,7 +136,8 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
         final MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(AlexaIntentHandlerFactory.FACTORY_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(AlexaIntentHandler.class)
-                .addParameter(AlexaInput.class, "input");
+                .addParameter(AlexaInput.class, "input")
+                .addCode(CodeBlock.of("final String intentName = input.getIntentName();"));
 
         final List<CodeBlock> codeBlocks = roundEnv.getElementsAnnotatedWith(AlexaIntentListener.class).stream()
                 // only interested in tagged classes

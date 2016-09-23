@@ -9,6 +9,7 @@
 package io.klerch.alexa.tellask.model.wrapper;
 
 import com.amazon.speech.speechlet.*;
+import io.klerch.alexa.state.handler.AlexaStateHandler;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaIntentModel;
@@ -42,7 +43,7 @@ public class AlexaSpeechlet implements Speechlet {
         try {
             // ensure model has a handler. by default choose the session state handler
             if (model.getHandler() == null) {
-                input.getSessionHandler().writeModel(model.getModel());
+                input.getSessionStateHandler().writeModel(model.getModel());
             } else {
                 model.saveState();
             }
@@ -111,20 +112,20 @@ public class AlexaSpeechlet implements Speechlet {
             output.getModels().stream().forEach(saveModelState);
             // generate speechlet response from settings returned by the intent handler and
             // contents of YAML utterance file
-            response = new AlexaSpeechletResponse(output, utteranceReader);
+            response = new AlexaSpeechletResponse(output, utteranceReader, locale);
         } catch (final AlexaRequestHandlerException e) {
             final AlexaRequestHandlerException exception = e.getInput() == null ?
                     new AlexaRequestHandlerException(e.getMessage(), e.getCause(), input, e.getErrorIntent()) : e;
             LOG.error("Error while handling an intent.", exception);
-            response = new AlexaSpeechletResponse(handler.handleError(exception), utteranceReader);
+            response = new AlexaSpeechletResponse(handler.handleError(exception), utteranceReader, locale);
         } catch (final AlexaStateException e) {
             final AlexaRequestHandlerException exception = new AlexaRequestHandlerException("Error while handling state.", e, input, null);
             LOG.error(exception);
-            response = new AlexaSpeechletResponse(handler.handleError(exception), utteranceReader);
+            response = new AlexaSpeechletResponse(handler.handleError(exception), utteranceReader, locale);
         } catch (final Exception e) {
             final AlexaRequestHandlerException exception = new AlexaRequestHandlerException("General error occured.", e, input, null);
             LOG.error(exception);
-            response = new AlexaSpeechletResponse(handler.handleError(exception), utteranceReader);
+            response = new AlexaSpeechletResponse(handler.handleError(exception), utteranceReader, locale);
         }
         return response;
     }

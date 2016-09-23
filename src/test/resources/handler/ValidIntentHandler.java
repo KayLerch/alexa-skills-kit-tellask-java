@@ -12,9 +12,10 @@ import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
 import io.klerch.alexa.tellask.schema.annotation.AlexaIntentListener;
+import io.klerch.alexa.tellask.schema.type.AlexaIntentType;
 import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
 
-@AlexaIntentListener(intentName = "IntentWithOneUtteranceAndOneReprompt", priority = 500)
+@AlexaIntentListener(builtInIntents = {AlexaIntentType.INTENT_CANCEL, AlexaIntentType.INTENT_HELP}, customIntents = { "IntentWithOneUtteranceAndOneReprompt", "test" }, priority = 500)
 public class ValidIntentHandler implements AlexaIntentHandler {
     @Override
     public boolean verify(AlexaInput alexaInput) {
