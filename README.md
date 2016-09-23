@@ -234,6 +234,7 @@ If you don't, _S3UtteranceReader_ uses the default AWS configuration from the ru
 Although there's even more to discover in this SDK you already got the most important
 basics for creating a skill with Tellask SDK. There's a lot going on behind the scenes
 but you won't care. You are just asked to:
+
 1. Create a speechlet handler by creating a class either extending _AlexaRequestStreamHandler_ (for Lambda functions)
 or _AlexaSpeechletServlet_ (for an external webservice)
 2. Built YAML-files with multi-language utterances and reprompts
