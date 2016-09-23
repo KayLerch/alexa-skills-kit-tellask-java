@@ -33,6 +33,20 @@ Learn how to use this SDK by having a look into the samples -
 Before you start make sure your IDE is set up for annotation processing. (How to for
 [IDEA](https://www.jetbrains.com/help/idea/2016.2/configuring-annotation-processing.html) and [Eclipse](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Fguide%2Fjdt_apt_getting_started.htm))
 
+Add below Maven dependency to your project.
+
+```xml
+<dependencies>
+  ...
+  <dependency>
+    <groupId>io.klerch</groupId>
+    <artifactId>alexa-skills-kit-tellask-java</artifactId>
+    <version>0.2.0</version>
+  </dependency>
+  ...
+</dependencies>
+```
+
 ### Prepare a request handler
 The request handler does what it says. It reacts on incoming speechlet requests and
 replies with a response. You could either have your skill implementation in a Lambda function or in
