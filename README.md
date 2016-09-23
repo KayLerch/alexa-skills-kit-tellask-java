@@ -8,8 +8,8 @@ and avoids a lot of boilerplate code.
 
 ## Key features
 * Your entire code is released from having output speech hardcoded in your skill, because ..
-* Response utterances and reprompts are held in YAML files
-* YAML files can be part of your JAR or can be stored in S3 buckets
+* Response utterances and reprompts are sourced out to YAML files
+* YAML files can be part of your JAR or can be stored in AWS S3 buckets
 * Have multiple YAML-files one for each locale. That makes it easy to build
 multi-language skills without any code redundancy
 * Have slots in those utterances which the engine resolves with values
@@ -29,6 +29,9 @@ in any situation.
 
 Learn how to use this SDK by having a look into the [Calculator skill](https://github.com/KayLerch/alexa-calculator-skill) -
  which is a reference implementation for a multi-language skill.
+
+Before you start make sure your IDE is set up for annotation processing. (How to for
+[IDEA](https://www.jetbrains.com/help/idea/2016.2/configuring-annotation-processing.html) and [Eclipse](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Fguide%2Fjdt_apt_getting_started.htm))
 
 ### Prepare a request handler
 The request handler does what it says. It reacts on incoming speechlet requests and
@@ -226,3 +229,19 @@ Above file-structure applies - but now instead of your files being in the _/reso
 they are read from the _bucketName_ bucket. Optionally you can give the _S3UtteranceReader_ an
 _AmazonS3Client_ to provide custom credentials, another AWS region or some proxy configuration.
 If you don't, _S3UtteranceReader_ uses the default AWS configuration from the runtime environment.
+
+### That's it
+Although there's even more to discover in this SDK you already got the most important
+basics for creating a skill with Tellask SDK. There's a lot going on behind the scenes
+but you won't care. You are just asked to:
+1. Create a speechlet handler by creating a class either extending _AlexaRequestStreamHandler_ (for Lambda functions)
+or _AlexaSpeechletServlet_ (for an external webservice)
+2. Built YAML-files with multi-language utterances and reprompts
+3. Create a set of intent handlers which extend from _AlexaIntentHandler_ and register
+them with just adding the _AlexaIntentListener_-annotation
+4. Create one launch handler which extends from _AlexaLaunchHandler_ and register it
+with the _AlexaLaunchListener_-annotation
+
+Rest of the time you spend on your actual skill logic. Good luck.
+
+More details on this SDK can be found in the [Javadocs](https://kaylerch.github.io/alexa-skills-kit-tellask-java/)
