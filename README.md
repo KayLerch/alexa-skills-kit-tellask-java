@@ -131,7 +131,7 @@ public class CancelIntentHandler implements AlexaIntentHandler {
     }
 
     @Override
-    public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
+    public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException {
         return AlexaOutput.tell("SayGoodBye").build();
     }
 
