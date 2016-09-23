@@ -1,0 +1,24 @@
+Add {a} plus {b}
+Add was ist {a} plus {b}
+Add berechne {a} plus {b}
+Add addiere {a}
+Add plus {a}
+
+Subtract {a} minus {b}
+Subtract was ist {a} minus {b}
+Subtract berechne {a} minus {b}
+Subtract subtrahiere {a}
+Subtract minus {a}
+
+Multiply {a} mal {b}
+Multiply was ist {a} mal {b}
+Multiply berechne {a} mal {b}
+Multiply multipliziere mit {a}
+Multiply mal {a}
+
+Divide {a} durch {b}
+Divide teile {a} durch {b}
+Divide was ist {a} durch {b}
+Divide berechne {a} durch {b}
+Divide teile durch {a}
+Divide dividiere durch {a}

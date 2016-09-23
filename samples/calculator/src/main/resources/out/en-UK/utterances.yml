@@ -1,0 +1,33 @@
+SayWelcome:
+  Utterances:
+    - "[Hello|Hi|Welcome|Hey] Give me two numbers and an operator."
+    - "[Hello|Hi|Welcome|Hey] Let me calculate for you."
+  Reprompts:
+    - "Please [provide|give me] two numbers and an operator."
+
+SayAddResult:
+  - "The result of {a} and {b} is {result}"
+  - "{a} [and|plus] {b} is {result}"
+
+SaySubtractResult:
+  - "The result of {a} [minus|reduced by] {b} is {result}"
+  - "{a} [minus|reduced by] {b} is {result}"
+
+SayMultiplyResult:
+  - "The result of {a} [times|multiplied by] {b} is {result}"
+  - "{a} [times|multiplied by] {b} is {result}"
+
+SayDivideResult:
+  - "The result of {a} divided by {b} is {result}"
+  - "{a} divided by {b} is {result}"
+
+SaySorryOnDivideBy0:
+  - "Division with 0 is not allowed."
+
+SayGoodBye:
+  - "[Bye|See you|Good bye]"
+
+SaySorry:
+  Utterances:
+    - "Sorry, something went wrong."
+    - "I am sorry. I failed."

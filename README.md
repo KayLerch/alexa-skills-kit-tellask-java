@@ -1,6 +1,6 @@
 [![Join the chat at https://gitter.im/alexa-skills-kit-tellask-java/Lobby](https://badges.gitter.im/alexa-skills-kit-tellask-java/Lobby.svg)](https://gitter.im/alexa-skills-kit-tellask-java/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![GPL Licence](https://img.shields.io/aur/license/yaourt.svg?maxAge=2592000)](https://opensource.org/licenses/GPL-3.0/)
 
-# Alexa Skills Kit Tellask SDK for Java
+# Alexa Tellask SDK for Java
 This SDK is an extension to the Alexa Skills SDK for Java. It provides a __framework for handling
 speechlet requests__ with multi-variant __response utterances organized in YAML__ files that make
 it easy to __create localized skills__. This SDK also lets you build your __skill in declarative style__
@@ -15,7 +15,7 @@ multi-language skills without any code redundancy
 * Have slots in those utterances which the engine resolves with values
 from your POJO models or from an output given by your intent handlers
 * Have multi-phrase-collections in your utterance to vary how Alexa replies
-* Compatible with state models from [States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java) which does all the
+* Compatible with state models from [Alexa States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java) which does all the
 state management of your POJO models by using S3, Dynamo or Alexa session as a store.
 * Speechlet handlers (either Lambda or Servlet) configurable with annotations
 * Register intent handlers with an annotation and without any need to bind it
@@ -27,8 +27,8 @@ in any situation.
 
 ## How to use
 
-Learn how to use this SDK by having a look into the [Calculator skill](https://github.com/KayLerch/alexa-calculator-skill) -
- which is a reference implementation for a multi-language skill.
+Learn how to use this SDK by having a look into the samples -
+ where you can find reference implementations for a multi-language skill.
 
 Before you start make sure your IDE is set up for annotation processing. (How to for
 [IDEA](https://www.jetbrains.com/help/idea/2016.2/configuring-annotation-processing.html) and [Eclipse](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Fguide%2Fjdt_apt_getting_started.htm))

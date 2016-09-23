@@ -1,0 +1,23 @@
+Add {a} plus {b}
+Add what is {a} plus {b}
+Add calculate {a} plus {b}
+Add add {a}
+Add plus {a}
+
+Subtract {a} minus {b}
+Subtract what is {a} minus {b}
+Subtract calculate {a} minus {b}
+Subtract subtract {a}
+Subtract minus {a}
+Subtract subtract by {a}
+
+Multiply {a} times {b}
+Multiply what is {a} times {b}
+Multiply calculate {a} times {b}
+Multiply multiply {a}
+Multiply multiply with {a}
+
+Divide divide {a} by {b}
+Divide what is {a} divided by {b}
+Divide calculate {a} divided by {b}
+Divide divide by {a}

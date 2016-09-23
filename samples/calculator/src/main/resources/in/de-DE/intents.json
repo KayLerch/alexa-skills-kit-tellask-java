@@ -1,0 +1,62 @@
+{
+  "intents": [
+    {
+      "intent": "Add",
+      "slots": [
+        {
+          "name": "a",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "b",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "Subtract",
+      "slots": [
+        {
+          "name": "a",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "b",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "Multiply",
+      "slots": [
+        {
+          "name": "a",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "b",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "Divide",
+      "slots": [
+        {
+          "name": "a",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "b",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    }
+  ]
+}
