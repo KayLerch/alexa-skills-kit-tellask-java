@@ -24,7 +24,7 @@ to YAML files inside the _/resources/out/_-folder.
     You     >   "Start calculator sample"
     Alexa   >   "Welcome! Give me two numbers and an operator."
     You     >   "One plus two"
-    Alexa   >   "The result of one plus three is three."
+    Alexa   >   "The result of one plus two is three."
     You     >   "Multiply with four"
     Alexa   >   "The result of three times four is twelve"
     You     >   "Set precision to three"
@@ -34,7 +34,9 @@ to YAML files inside the _/resources/out/_-folder.
     You     >   "Stop"
     Alexa   >   "Bye"
 
-You could have the same dialogue in German.
+You could have the same dialogue in German. Now, whenever you start
+the skill Alexa calculates with a precision of three decimal places as it
+stored that information in DynamoDB.
 
 ## How to set up this skill
 1. Create a skill in Alexa developer console. Learn about [here](https://developer.amazon.com/public/community/post/Tx2XUAQ741IYQI4/How-to-Build-a-Multi-Language-Alexa-Skill)
