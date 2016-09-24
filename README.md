@@ -137,7 +137,7 @@ need to register it with an annotation. Secondly you have to tell it which inten
 your handler should listen for.
 
 ```java
-@AlexaIntentListener(intentType = {INTENT_CANCEL, INTENT_STOP}, priority = 100)
+@AlexaIntentListener(builtInIntents = {INTENT_CANCEL, INTENT_STOP}, priority = 100)
 public class CancelIntentHandler implements AlexaIntentHandler {
     @Override
     public boolean verify(final AlexaInput input) {
