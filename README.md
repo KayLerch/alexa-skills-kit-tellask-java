@@ -25,7 +25,7 @@ custom criteria - it was never that flexible to react on intents
 * Explicit exception handling in intent handlers to have Alexa react accordingly
 in any situation
 
-If you are more into Python you better check out John Wheeler's [flask-ask](https://github.com/johnwheeler/flask-ask) which is another powerful toolkit for building Alexa skills.
+If you are more into Python you better check out John Wheeler's [flask-ask](https://github.com/johnwheeler/flask-ask) which is another powerful toolkit for building skills.
 
 ## How to use
 
