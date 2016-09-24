@@ -22,3 +22,8 @@ Divide was ist {a} durch {b}
 Divide berechne {a} durch {b}
 Divide teile durch {a}
 Divide dividiere durch {a}
+
+Precision Setze Genauigkeit auf {decimalplaces} Stellen
+Precision Setze Genauigkeit auf {decimalplaces} Nachkommastellen
+Precision Rechne mit {decimalplaces} Stellen
+Precision Rechne mit {decimalplaces} Nachkommastellen

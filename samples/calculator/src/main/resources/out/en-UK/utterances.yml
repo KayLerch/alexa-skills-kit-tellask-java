@@ -1,7 +1,7 @@
 SayWelcome:
   Utterances:
-    - "[Hello|Hi|Welcome|Hey] Give me two numbers and an operator."
-    - "[Hello|Hi|Welcome|Hey] Let me calculate for you."
+    - "[Hello|Hi|Welcome|Hey]! Give me two numbers and an operator."
+    - "[Hello|Hi|Welcome|Hey]! Let me calculate for you."
   Reprompts:
     - "Please [provide|give me] two numbers and an operator."
 
@@ -23,6 +23,10 @@ SayDivideResult:
 
 SaySorryOnDivideBy0:
   - "Division with 0 is not allowed."
+
+SayNewPrecision:
+  - "From now on I round results for you to {precision} decimal places"
+  - "Calculation results will be rounded to {precision} decimal places"
 
 SayGoodBye:
   - "[Bye|See you|Good bye]"

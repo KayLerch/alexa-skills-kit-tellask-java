@@ -63,6 +63,12 @@
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-dynamodb</artifactId>
+            <version>1.11.33</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-log4j</artifactId>
             <version>1.0.0</version>
         </dependency>

@@ -53,6 +53,15 @@
       ]
     },
     {
+      "intent": "Precision",
+      "slots": [
+        {
+          "name": "decimalplaces",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
       "intent": "AMAZON.CancelIntent"
     },
     {

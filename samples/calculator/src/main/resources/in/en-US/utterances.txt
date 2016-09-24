@@ -21,3 +21,8 @@ Divide divide {a} by {b}
 Divide what is {a} divided by {b}
 Divide calculate {a} divided by {b}
 Divide divide by {a}
+
+Precision set precision to {decimalplaces}
+Precision calculate with precision of {decimalplaces}
+Precision round to {decimalplaces} decimal place
+Precision round to {decimalplaces} decimal places

@@ -6,7 +6,7 @@ import io.klerch.alexa.tellask.schema.annotation.AlexaApplication;
 import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
 import io.klerch.alexa.tellask.util.resource.S3UtteranceReader;
 
-@AlexaApplication(applicationIds = "amzn1.ask.skill.7617...")
+@AlexaApplication(applicationIds = "amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
 public class CalculationSpeechletHandler extends AlexaRequestStreamHandler {
     @Override
     public UtteranceReader getUtteranceReader() {

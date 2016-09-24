@@ -24,6 +24,10 @@ SayDivideResult:
 SaySorryOnDivideBy0:
   - "Division durch null ist nicht möglich."
 
+SayNewPrecision:
+  - "Ab jetzt runde ich Ergebnisse auf {precision} Nachkommastellen."
+  - "Ergebnisse werde nun auf {precision} Stellen gerundet."
+
 SayGoodBye:
   - "[Auf wiedersehen|Tschüss|Bis bald]"
 

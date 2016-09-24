@@ -1,6 +1,8 @@
 package skill.handler.divide;
 
 import com.amazon.speech.ui.SimpleCard;
+import io.klerch.alexa.state.handler.AWSDynamoStateHandler;
+import io.klerch.alexa.state.handler.AlexaStateHandler;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;
@@ -20,16 +22,22 @@ public class DivideOneIntentHandler implements AlexaIntentHandler {
 
     @Override
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
+        // get state handlers for session and dynamoDB of States SDK
+        final AlexaStateHandler sessionHandler = input.getSessionStateHandler();
+        final AlexaStateHandler dynamoHandler = new AWSDynamoStateHandler(sessionHandler.getSession());
+
+        // try get calculation from session first, if not there read or create in dynamo
+        // cause we permanently save the precision a user can set
+        final Calculation calc = sessionHandler.readModel(Calculation.class)
+                .orElse(dynamoHandler.readModel(Calculation.class)
+                        .orElse(dynamoHandler.createModel(Calculation.class)));
+
         // number from slot (already ensured is a number in verfiy
         final Integer a = Integer.valueOf(input.getSlotValue("a"));
 
         if (a == 0) {
             throw new AlexaRequestHandlerException("Division by 0 not allowed.", input, "SaySorryOnDivideBy0");
         }
-
-        // get or create calculation from session object
-        final Calculation calc = input.getSessionStateHandler().readModel(Calculation.class)
-                .orElse(input.getSessionStateHandler().createModel(Calculation.class));
 
         // former result will be the other addend
         final double lastResult = calc.getResult();
@@ -38,6 +46,11 @@ public class DivideOneIntentHandler implements AlexaIntentHandler {
 
         final SimpleCard formulaCard = new SimpleCard();
         formulaCard.setContent(lastResult + " / " + a + " = " + calc.getResult());
+
+        // ensure model is written back to session only (in case it was read out from dynamo)
+        // we'd like to avoid unnecessary roundtrips to dynamo at this point cause we'd only
+        // change the result which is not saved permanently
+        calc.setHandler(sessionHandler);
 
         return AlexaOutput.ask("SayDivideResult")
                 .putSlot(new AlexaOutputSlot("a", lastResult).formatAs(AlexaOutputFormat.NUMBER))

@@ -1,6 +1,8 @@
 package skill.handler.divide;
 
 import com.amazon.speech.ui.SimpleCard;
+import io.klerch.alexa.state.handler.AWSDynamoStateHandler;
+import io.klerch.alexa.state.handler.AlexaStateHandler;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;
@@ -21,6 +23,16 @@ public class DivideTwoIntentHandler implements AlexaIntentHandler {
 
     @Override
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
+        // get state handlers for session and dynamoDB of States SDK
+        final AlexaStateHandler sessionHandler = input.getSessionStateHandler();
+        final AlexaStateHandler dynamoHandler = new AWSDynamoStateHandler(sessionHandler.getSession());
+
+        // try get calculation from session first, if not there read or create in dynamo
+        // cause we permanently save the precision a user can set
+        final Calculation calc = sessionHandler.readModel(Calculation.class)
+                .orElse(dynamoHandler.readModel(Calculation.class)
+                        .orElse(dynamoHandler.createModel(Calculation.class)));
+
         // number from slot (already ensured is a number in verfiy
         final Integer a = Integer.valueOf(input.getSlotValue("a"));
         // number from slot (already ensured is a number in verfiy
@@ -30,12 +42,15 @@ public class DivideTwoIntentHandler implements AlexaIntentHandler {
             throw new AlexaRequestHandlerException("Division by 0 not allowed.", input, "SaySorryOnDivideBy0");
         }
 
-        // create new calculation
-        final Calculation calc = new Calculation();
         calc.divide(a, b);
 
         final SimpleCard formulaCard = new SimpleCard();
         formulaCard.setContent(a + " / " + b + " = " + calc.getResult());
+
+        // ensure model is written back to session only (in case it was read out from dynamo)
+        // we'd like to avoid unnecessary roundtrips to dynamo at this point cause we'd only
+        // change the result which is not saved permanently
+        calc.setHandler(sessionHandler);
 
         return AlexaOutput.ask("SayDivideResult")
                 .withCard(formulaCard)

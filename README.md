@@ -9,21 +9,19 @@ and avoids a lot of boilerplate code.
 ## Key features
 * Your entire code is released from having output speech hardcoded in your skill, because ..
 * Response utterances and reprompts are sourced out to YAML files
-* YAML files can be part of your JAR or can be stored in AWS S3 buckets
-* Have multiple YAML-files one for each locale. That makes it easy to build
-multi-language skills without any code redundancy
-* Have slots in those utterances which the engine resolves with values
+* YAML files can be part of your JAR or can be stored in an AWS S3 bucket
+* Have multiple YAML-files - one for each locale. That makes it easy to build
+multi-language skills without code redundancy
+* Have slots in those utterances which the engine fills up with values
 from your POJO models or from an output given by your intent handlers
-* Have multi-phrase-collections in your utterance to vary how Alexa replies
+* Have multi-phrase-collections in your utterance to vary Alexa's replies
 * Compatible with state models from [Alexa States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java) which does all the
 state management of your POJO models by using S3, Dynamo or Alexa session as a store.
 * Speechlet handlers (either Lambda or Servlet) configurable with annotations
-* Register intent handlers with an annotation and without any need to bind it
-to the speechlet handler.
-* Have multiple intent handlers for the same intent and route an intent
-based on custom criteria (like presence of a specific slot)
+* Auto-registered intent listeners subscribe for one to many intents matching
+custom criteria - it was never that flexible to react on intents
 * Explicit exception handling in intent handlers to have Alexa react accordingly
-in any situation.
+in any situation
 
 ## How to use
 
