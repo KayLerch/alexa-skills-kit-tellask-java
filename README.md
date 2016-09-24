@@ -1,4 +1,5 @@
 [![Join the chat at https://gitter.im/alexa-skills-kit-tellask-java/Lobby](https://badges.gitter.im/alexa-skills-kit-tellask-java/Lobby.svg)](https://gitter.im/alexa-skills-kit-tellask-java/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![GPL Licence](https://img.shields.io/aur/license/yaourt.svg?maxAge=2592000)](https://opensource.org/licenses/GPL-3.0/)
+[![SonarQube Coverage](https://img.shields.io/sonar/http/sonar.qatools.ru/ru.yandex.qatools.allure:allure-core/coverage.svg?maxAge=2592000)]()
 
 # Alexa Tellask SDK for Java
 This SDK is an extension to the Alexa Skills SDK for Java. It provides a __framework for handling
