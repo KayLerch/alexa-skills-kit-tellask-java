@@ -106,7 +106,7 @@ user. You register your handler with an annotation.
 public class LaunchHandler implements AlexaLaunchHandler {
 
     @Override
-    public AlexaOutput handleRequest(final AlexaInput alexaInput) {
+    public AlexaOutput handleRequest(final AlexaInput alexaInput) throws AlexaRequestHandlerException {
         return AlexaOutput.ask("SayWelcome")
                 .putSlot(new AlexaOutputSlot("name", "Joe").formatAs(PHONEME_IPA))
                 .withReprompt(true)
