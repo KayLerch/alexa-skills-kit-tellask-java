@@ -47,16 +47,24 @@ public class AlexaIntentListenerProcessor extends AbstractProcessor {
     private ProcessingEnvironment processingEnvironment;
 
     private Function<TypeElement, CodeBlock> generateCode = (final TypeElement element) -> {
+        final ClassName handlerClass = ClassName.get(element);
+
+        final List<AlexaIntentType> builtInIntents = Arrays.asList(element.getAnnotation(AlexaIntentListener.class).builtInIntents());
+
+        // if the wildcard-intent "any" is found
+        if (builtInIntents.contains(AlexaIntentType.INTENT_ANY)) {
+            // the intent doesn't need to match the actual intent name
+            return CodeBlock.of("{final " + AlexaIntentHandler.class.getSimpleName() + " handler = new $T();" +
+                    "if (handler.verify(input)) return handler;}", handlerClass);
+        }
+
         // get custom intents to listen for
         final List<String> intents = Arrays.stream(element.getAnnotation(AlexaIntentListener.class).customIntents()).collect(Collectors.toList());
 
         // join with built-in intents to listen for
-        Arrays.asList(element.getAnnotation(AlexaIntentListener.class).builtInIntents())
-                .stream()
+        builtInIntents.stream()
                 .map(AlexaIntentType::getName)
                 .forEach(intents::add);
-
-        final ClassName handlerClass = ClassName.get(element);
 
         final String intentNames = String.join(", ",
                 intents.stream()

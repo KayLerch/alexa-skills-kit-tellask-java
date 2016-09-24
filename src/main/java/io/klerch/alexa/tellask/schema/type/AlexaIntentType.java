@@ -14,6 +14,13 @@ package io.klerch.alexa.tellask.schema.type;
  */
 public enum AlexaIntentType {
     /**
+     * Is a wildcard for addressing all incoming intents regardless of
+     * being a builtin- or custom intent. Make sure you set a higher
+     * priority for the listener in case you want to use it as a global
+     * interceptor.
+     */
+    INTENT_ANY(""),
+    /**
      * User is requesting help
      */
     INTENT_HELP("AMAZON.HelpIntent"),

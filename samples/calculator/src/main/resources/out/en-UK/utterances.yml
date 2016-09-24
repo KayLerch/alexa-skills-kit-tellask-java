@@ -35,3 +35,11 @@ SaySorry:
   Utterances:
     - "Sorry, something went wrong."
     - "I am sorry. I failed."
+
+
+SayWelcome:
+  Utterances:
+    - "[Hello|Hi|Welcome|Hey]! I can welcome you in different ways."
+    - "[Hello|Hi|Welcome|Hey]! Utterances"
+  Reprompts:
+    - "Please [provide|give me] two numbers and an operator."

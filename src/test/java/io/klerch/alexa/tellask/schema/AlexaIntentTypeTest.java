@@ -15,6 +15,7 @@ import org.junit.Test;
 public class AlexaIntentTypeTest {
     @Test
     public void getName() throws Exception {
+        Assert.assertEquals("", AlexaIntentType.INTENT_ANY.getName());
         Assert.assertEquals("AMAZON.CancelIntent", AlexaIntentType.INTENT_CANCEL.getName());
         Assert.assertEquals("AMAZON.HelpIntent", AlexaIntentType.INTENT_HELP.getName());
         Assert.assertEquals("AMAZON.NextIntent", AlexaIntentType.INTENT_NEXT.getName());
