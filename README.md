@@ -183,7 +183,7 @@ Once you give an instance of this model class to _AlexaOutput_._putState_ the un
 speechlet will put values into the slots of an utterance. Moreover, the speechlet also
 takes care of writing state of _AlexaStateSave_-annotated fields to either Alexa session
 or one of the persistence stores supported by [States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java).
-Learn more about POJO state models and _AlexaStateHandler_s with [States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java)
+Learn more about POJO state models and _AlexaStateHandlers_ with [States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java)
 
 This is a typical POJO state model:
 ```java
