@@ -163,7 +163,7 @@ your custom intents defined in the intent schema in the Alexa developer console.
 Whenever an intent is received from the speechlet handler the intent handler is
 picked automatically in case its _verfiy_ returns true. This is how you could have multiple
 handlers for the same intent (e.g. the YES-intent) and let the engine pick the correct
-one based on certain conditions checked in the _verfiy_-method. If there's more than
+one based on certain conditions checked in the _verify_-method. If there's more than
 one intent handler interested in the same intent and all of them also verify the request
 then _priority_ comes into play.
 
