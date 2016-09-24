@@ -176,6 +176,66 @@ can provide to the output:
 * _tell_ and _ask_ to decide if the session ends after having Alexa respond with your utterance
 * an option to override the locale
 
+#### Provide slot values from POJO models
+Instead of explicitly set slot values with _AlexaOutput_._putSlot_ you could also give
+it a model class which extends from _AlexaStateModel_ and got fields with _AlexaSlotSave_-annotation.
+Once you give an instance of this model class to _AlexaOutput_._putState_ the underlying
+speechlet will put values into the slots of an utterance. Moreover, the speechlet also
+takes care of writing state of _AlexaStateSave_-annotated fields to either Alexa session
+or one of the persistence stores supported by [States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java).
+Learn more about POJO state models and _AlexaStateHandler_s with [States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java)
+
+This is a typical POJO state model:
+```java
+public class Calculation extends AlexaStateModel {
+    @AlexaStateSave(Scope = AlexaScope.USER)
+    @AlexaSlotSave(slotName = "precision", formatAs = AlexaOutputFormat.NUMBER)
+    private int precision = 1;
+
+    @AlexaSlotSave(slotName = "result", formatAs = AlexaOutputFormat.NUMBER)
+    @AlexaStateSave
+    private double result = 0;
+    // ...
+}
+```
+And this is how you would read/write model state from and to a store. Also the _precision_
+value will be filled up in an _output slot_ if it exists in a _response utterance_:
+```java
+@AlexaIntentListener(customIntents = "Precision")
+public class PrecisionIntentHandler implements AlexaIntentHandler {
+    @Override
+    public boolean verify(final AlexaInput input) {
+        return input.hasSlotIsNumber("decimalplaces");
+    }
+    @Override
+    public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException {
+        final AlexaStateHandler sessionHandler = input.getSessionStateHandler();
+        final AlexaStateHandler dynamoHandler = new AWSDynamoStateHandler(sessionHandler.getSession());
+
+        final Calculation calc = sessionHandler.readModel(Calculation.class)
+            .orElse(dynamoHandler.readModel(Calculation.class)
+            .orElse(dynamoHandler.createModel(Calculation.class)));
+
+        cal.setPrecision(Integer.valueOf(input.getSlotValue("decimalplaces")));
+
+        return AlexaOutput.ask("SayNewPrecision")
+            .putState(calc)
+            .build();
+    }
+    // ...
+}
+```
+This also is a good example of how to subscribe / listen to an intent matching a
+custom critera (a slot named _decimalplaces_ must have a numeric value).
+
+A corresponding utterance in the YAML file could be the following:
+
+```yaml
+SayNewPrecision:
+  - "From now on I round results for you to {precision} decimal places"
+  - "Calculation results will be rounded to {precision} decimal places"
+```
+
 ### Store your utterances YAMLs in an S3 bucket
 Another great feature of this SDK is to source editorial content out of the JAR. By storing
 utterance YAML-files in an S3 bucket you can easily work on speech phrases in your skill without

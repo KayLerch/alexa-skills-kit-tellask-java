@@ -18,7 +18,7 @@ public class PrecisionIntentHandler implements AlexaIntentHandler {
     }
 
     @Override
-    public AlexaOutput handleRequest(AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
+    public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
         // get state handlers for session and dynamoDB of States SDK
         final AlexaStateHandler sessionHandler = input.getSessionStateHandler();
         final AlexaStateHandler dynamoHandler = new AWSDynamoStateHandler(sessionHandler.getSession());
