@@ -77,10 +77,13 @@ content of your skill in YAML files. You're much more flexible with this approac
 You manage those contents similar to how you do it in the Alexa developer console -
 by using __intents__ and __slots__. This is a sample YAML file
 ```yaml
+WelcomeSpeeches:
+  - "[Hello|Hi|Welcome|Hey]"
+
 SayWelcome:
   Utterances:
-    - "[Hello|Hi|Welcome|Hey] {name} <p>Nice to meet you.</p>"
-    - "Thanks {name} for using my skill."
+    - "${WelcomeSpeeches} {name} <p>Nice to meet you.</p>"
+    - "${WelcomeSpeeches} {name} for using my skill."
   Reprompts:
     - "What would you like to do now?"
     - "How can I help you?"
@@ -92,11 +95,13 @@ SayGoodBye:
   - "[Bye|See you|Good bye]"
 ```
 _SayWelcome_, _SayGoodBye_, _SaySorry_ are __response intents__ you will refer to later on.
-The first one has two __response utterances__ where the engine will pick one of them randomly. It
-also got __multi-phrases__ wrapped in square brackets. Only one of them is chosen by the
-engine as well. That said Alexa got five ways of welcoming a user. The utterances
-also contain an __output slot__ called _{name}_ which will be resolved by the engine. All these features
-are also available for __reprompts__ which you define right below the general utterances.
+The first one has two __response utterances__ where the engine will pick one of them randomly.
+Inside YAML files you can also use templates like _WelcomeSpeeches_ to reuse certain
+speeches in utterances and reprompts by referring to them with _${templatename}_.
+In templates but also directly in utterances you can have __multi-phrases__ wrapped in square brackets.
+Only one of them is chosen by the engine randomly as well. That said Alexa got five ways of welcoming a user.
+The utterances also contain an __output slot__ called _{name}_ which will be resolved by the engine.
+All aforementioned features are also available for __reprompts__ which you define right below the general utterances.
 
 ### Create an AlexaLaunchHandler
 which handles a launch event whenever your skill is started by the
@@ -169,6 +174,32 @@ then _priority_ comes into play.
 
 Once again exception handling in _handleRequest_ is done for you from the outside and
 errors will be routed to _handleError_ so you can react on it with output speech.
+
+#### AlexaInput
+The _AlexaInput_ is given to the launch- and intent handlers. It provides everything which
+comes with the speechlet request and also gives you an _AlexaSessionStateHandler_ useful for
+reading/writing state to Alexa session (learn more about state handlers in [Alexa States SDK](https://github.com/KayLerch/alexa-skills-kit-states-java))
+Most important for you might be the intents coming in with a request. _AlexaInput_
+has some really useful helpers so that you can check and get values from input intents.
+
+Assume you work with an _AlexaInput_ in the _verfiy_method of an intent handler, the following
+might be interesting to you:
+
+```java
+@Override
+    public boolean verify(final AlexaInput input) {
+        final boolean slotIsNumber = input.hasSlotIsNumber("slotName");
+        final boolean slotIsNotBlank = input.hasSlotNotBlank("slotName");
+        final boolean slotEquals = input.hasSlotIsEqual("slotName", "someValue");
+        final boolean slotPhoneticEqual = input.hasSlotIsDoubleMetaphoneEqual("slotName", "drew");
+        final boolean slotHasTrueValue = input.hasSlotIsTrue("slotName");
+        // ...
+    }
+```
+
+So you can check a slot for a number but also for a certain value. Moreover, you
+could even check for a phonetic equivalent by levering the [Double Metaphone](https://en.wikipedia.org/wiki/Metaphone#Double_Metaphone) algorithm.
+Finally can obtain a slots value with _getSlotValue_.
 
 #### AlexaOutput
 You saw _AlexaOutput_ is returned by the launch- and intent-handlers. There's a lot you
