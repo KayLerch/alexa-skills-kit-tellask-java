@@ -199,7 +199,9 @@ might be interesting to you:
 
 So you can check a slot for a number but also for a certain value. Moreover, you
 could even check for a phonetic equivalent by levering the [Double Metaphone](https://en.wikipedia.org/wiki/Metaphone#Double_Metaphone) algorithm.
-Finally can obtain a slots value with _getSlotValue_.
+For example the line checking for value of "drew" with _hasSlotIsDoubleMetaphoneEqual_ will
+return true if the slot value contains "true" as a value - which is a phonetic sibling of "drew".
+Finally you can obtain a slots value with _getSlotValue_.
 
 #### AlexaOutput
 You saw _AlexaOutput_ is returned by the launch- and intent-handlers. There's a lot you
