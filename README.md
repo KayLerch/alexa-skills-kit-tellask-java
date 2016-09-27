@@ -25,6 +25,8 @@ custom criteria - it was never that flexible to react on intents
 * Explicit exception handling in intent handlers to have Alexa react accordingly
 in any situation
 
+If you are more into Python you better check out John Wheeler's [flask-ask](https://github.com/johnwheeler/flask-ask) which is another powerful toolkit for building skills.
+
 ## How to use
 
 Learn how to use this SDK by having a look into the samples -
@@ -104,7 +106,7 @@ user. You register your handler with an annotation.
 public class LaunchHandler implements AlexaLaunchHandler {
 
     @Override
-    public AlexaOutput handleRequest(final AlexaInput alexaInput) {
+    public AlexaOutput handleRequest(final AlexaInput alexaInput) throws AlexaRequestHandlerException {
         return AlexaOutput.ask("SayWelcome")
                 .putSlot(new AlexaOutputSlot("name", "Joe").formatAs(PHONEME_IPA))
                 .withReprompt(true)
@@ -137,7 +139,7 @@ need to register it with an annotation. Secondly you have to tell it which inten
 your handler should listen for.
 
 ```java
-@AlexaIntentListener(intentType = {INTENT_CANCEL, INTENT_STOP}, priority = 100)
+@AlexaIntentListener(builtInIntents = {INTENT_CANCEL, INTENT_STOP}, priority = 100)
 public class CancelIntentHandler implements AlexaIntentHandler {
     @Override
     public boolean verify(final AlexaInput input) {
@@ -161,7 +163,7 @@ your custom intents defined in the intent schema in the Alexa developer console.
 Whenever an intent is received from the speechlet handler the intent handler is
 picked automatically in case its _verfiy_ returns true. This is how you could have multiple
 handlers for the same intent (e.g. the YES-intent) and let the engine pick the correct
-one based on certain conditions checked in the _verfiy_-method. If there's more than
+one based on certain conditions checked in the _verify_-method. If there's more than
 one intent handler interested in the same intent and all of them also verify the request
 then _priority_ comes into play.
 
