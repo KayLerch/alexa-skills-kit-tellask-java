@@ -80,6 +80,37 @@ public class AlexaInputTest {
     }
 
     @Test
+    public void testHasSlotIsEqual() throws Exception {
+        final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
+        final Session session = ModelFactory.givenSession();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+
+        Assert.assertTrue(input.hasSlotIsEqual("slotString", "value"));
+        Assert.assertFalse(input.hasSlotIsEqual("slotString", "not-value"));
+        Assert.assertFalse(input.hasSlotIsEqual("slot-that-does-not-exist", "value-that-doesnt-matter"));
+
+        Assert.assertTrue(input.hasSlotIsEqual("slotBlank", ""));
+        Assert.assertFalse(input.hasSlotIsEqual("slotBlank", "value"));
+
+        Assert.assertTrue(input.hasSlotIsEqual("slotNull", null));
+    }
+
+    @Test
+    public void testHasSlotIsDoubleMetaphoneEqual() throws Exception {
+        final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
+        final Session session = ModelFactory.givenSession();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+
+        Assert.assertTrue(input.hasSlotIsDoubleMetaphoneEqual("slotString", "valui"));
+        Assert.assertFalse(input.hasSlotIsDoubleMetaphoneEqual("slotString", "not-value"));
+        Assert.assertTrue(input.hasSlotIsDoubleMetaphoneEqual("slotBoolean", "drew"));
+        Assert.assertFalse(input.hasSlotIsDoubleMetaphoneEqual("slotBoolean", "false"));
+
+        Assert.assertFalse(input.hasSlotIsDoubleMetaphoneEqual("slotBlank", ""));
+        Assert.assertFalse(input.hasSlotIsDoubleMetaphoneEqual("slotNull", "value"));
+    }
+
+    @Test
     public void testHasSlot() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
         final Session session = ModelFactory.givenSession();

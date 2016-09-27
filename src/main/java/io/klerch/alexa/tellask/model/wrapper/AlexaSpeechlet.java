@@ -9,7 +9,6 @@
 package io.klerch.alexa.tellask.model.wrapper;
 
 import com.amazon.speech.speechlet.*;
-import io.klerch.alexa.state.handler.AlexaStateHandler;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaIntentModel;

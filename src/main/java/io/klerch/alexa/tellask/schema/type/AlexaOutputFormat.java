@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * The output formats provide a set of SSML pattern. Applied to some value (most likely
- * AlexaSlotSave-fields in state models) it returns a valid SSML which go into a reply utterance.
+ * AlexaSlotSave-fields in state models) it returns a valid SSML which go into a response utterance.
  */
 public enum AlexaOutputFormat {
     /**
@@ -44,13 +44,13 @@ public enum AlexaOutputFormat {
      */
     NUMBER("<say-as interpret-as=\"number\">%1$s</say-as>"),
     /**
-     * Value is wrapped in a SSML-tag letting Alexa treat this value as an ordinal number. Make sure
-     * this value is numeric.
+     * Value is wrapped in a SSML-tag letting Alexa treat this value as an ordinal. Make sure
+     * this value contains an ordinal.
      */
     ORDINAL("<say-as interpret-as=\"ordinal\">%1$s</say-as>"),
     /**
      * Value is wrapped in a SSML-tag letting Alexa treat this value as number with digits. Make sure
-     * this value is numeric.
+     * this value is a digital string.
      */
     DIGITS("<say-as interpret-as=\"digits\">%1$s</say-as>"),
     /**

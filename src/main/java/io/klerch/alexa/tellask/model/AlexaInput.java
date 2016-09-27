@@ -14,6 +14,7 @@ import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletRequest;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import io.klerch.alexa.state.handler.AlexaStateHandler;
+import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -98,6 +99,32 @@ public class AlexaInput {
      */
     public boolean hasSlot(final String slotName) {
         return intentRequest != null && intentRequest.getIntent().getSlots().containsKey(slotName);
+    }
+
+    /**
+     * Checks if a slot is contained in the intent request and also got the value provided.
+     * @param slotName name of the slot to look after
+     * @param value the value
+     * @return True, if slot with slotName has a value equal to the given value
+     */
+    public boolean hasSlotIsEqual(final String slotName, final String value) {
+        final String slotValue = getSlotValue(slotName);
+        return (slotValue != null && slotValue.equals(value)) ||
+                slotValue == value;
+    }
+
+    /**
+     * Checks if a slot is contained in the intent request and has a value which is a
+     * phonetic sibling of the string given to this method. Double metaphone algorithm
+     * is used to match slot value with value given to this method.
+     * @param slotName name of the slot to look after
+     * @param value the value
+     * @return True, if slot value and given value are phonetically equal with Double metaphone algorithm
+     */
+    public boolean hasSlotIsDoubleMetaphoneEqual(final String slotName, final String value) {
+        final String slotValue = getSlotValue(slotName);
+        return hasSlotNotBlank(slotName) && value != null &&
+                new DoubleMetaphone().isDoubleMetaphoneEqual(slotValue, value);
     }
 
     /**

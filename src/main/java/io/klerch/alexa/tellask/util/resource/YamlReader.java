@@ -1,8 +1,8 @@
 /**
  * Created by Kay Lerch (https://twitter.com/KayLerch)
- *
+ * <p>
  * Contribute to https://github.com/KayLerch/alexa-skills-kit-tellask-java
- *
+ * <p>
  * Attached license applies.
  * This source is licensed under GNU GENERAL PUBLIC LICENSE Version 3 as of 29 June 2007
  */
@@ -10,10 +10,14 @@ package io.klerch.alexa.tellask.util.resource;
 
 import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.schema.UtteranceReader;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,6 +30,7 @@ public class YamlReader {
     private final UtteranceReader utteranceReader;
     private final Map<String, List<Object>> phrases = new HashMap<>();
     private final String locale;
+    private final Map<?, ?> content;
 
     /**
      * A new YAMLReader needs an UtteranceReader so it can obtain YAML content with utterances.
@@ -37,6 +42,8 @@ public class YamlReader {
     public YamlReader(final UtteranceReader utteranceReader, final String locale) {
         this.utteranceReader = utteranceReader;
         this.locale = locale;
+        // leverage reader to get yaml with utterances
+        content = new Yaml().loadAs(utteranceReader.read(locale), Map.class);
     }
 
     /**
@@ -112,9 +119,6 @@ public class YamlReader {
     }
 
     private List<Object> loadUtterances(final String intentName) {
-        // leverage reader to get yaml with utterances
-        final Map<?, ?> content = new Yaml().loadAs(utteranceReader.read(locale), Map.class);
-
         // flatten yaml strings values beneath intent node of interest
         return content.entrySet().stream()
                 .filter(k -> k.getKey().equals(intentName))
@@ -154,11 +158,31 @@ public class YamlReader {
 
             if (assumedUtteranceCollection instanceof ArrayList) {
                 // parse each phrase as string and add to return collection
-                ((ArrayList)assumedUtteranceCollection).forEach(utterance -> utterances.add(String.valueOf(utterance)));
+                ((ArrayList) assumedUtteranceCollection)
+                        .stream()
+                        .map(resolvePlaceholders)
+                        .forEach(utterance -> utterances.add(String.valueOf(utterance)));
+            } else if (assumedUtteranceCollection instanceof String) {
+                utterances.add(String.valueOf(assumedUtteranceCollection));
             }
         }
         return utterances;
     }
+    private Function<Object, String> resolvePlaceholders = (final Object utterance) -> {
+        final StringBuffer buffer = new StringBuffer();
+        // extract all the placeholders (e.g. ${placeholder}) found in the utterance
+        final Matcher placeholders = Pattern.compile("\\$\\{(.*?)\\}").matcher(utterance.toString());
+        // for any of the placeholders ...
+        while (placeholders.find()) {
+            final String placeholderName = placeholders.group(1);
+            final List<String> placeholderValues = getPhrasesForIntent(placeholderName, 0);
+
+            Validate.notEmpty(placeholderValues, "Utterance placeholder with name '" + placeholderName + "' could not be resolved.");
+            placeholders.appendReplacement(buffer, placeholderValues.get(0));
+        }
+        placeholders.appendTail(buffer);
+        return buffer.toString();
+    };
 
     private Optional<String> getRandomOf(final List<String> list) {
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(new Random().nextInt(list.size())));
