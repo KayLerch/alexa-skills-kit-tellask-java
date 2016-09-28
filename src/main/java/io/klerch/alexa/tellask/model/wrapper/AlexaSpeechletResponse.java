@@ -142,10 +142,6 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         return null;
     }
 
-    private Optional<String> getRandomOf(final List<String> list) {
-        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(new Random().nextInt(list.size())));
-    }
-
     private String resolveSlotsInUtterance(final String utterance) {
         final StringBuffer buffer = new StringBuffer();
         // extract all the placeholders found in the utterance
