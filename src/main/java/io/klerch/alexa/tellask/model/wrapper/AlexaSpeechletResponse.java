@@ -142,36 +142,14 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
         return null;
     }
 
-    private String resolveMultiPhraseCollections(final String utterance) {
-        final StringBuffer buffer = new StringBuffer();
-        // extract all the phrase collection (e.g. [Hello|Hi|Welcome] found in the utterance
-        final Matcher multiPhrases = Pattern.compile("\\[(.*?)\\]").matcher(utterance);
-        // for any of the multi-phrases ...
-        while (multiPhrases.find()) {
-            final String multiPhrase = multiPhrases.group(1);
-            // single phrases are delimited by pipes
-            final List<String> multiPhraseCollection = Arrays.asList(multiPhrase.split("\\|"));
-            // pick random phrase out of the collection
-            final String randomPhrase = getRandomOf(multiPhraseCollection).orElse("");
-            if (StringUtils.isBlank(randomPhrase)) {
-                LOG.warn("Empty multi-phrase collection found in one of your utterances. Got replaced by an empty string in speechlet response.");
-            }
-            multiPhrases.appendReplacement(buffer, randomPhrase);
-        }
-        multiPhrases.appendTail(buffer);
-        return buffer.toString();
-    }
-
     private Optional<String> getRandomOf(final List<String> list) {
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(new Random().nextInt(list.size())));
     }
 
     private String resolveSlotsInUtterance(final String utterance) {
-        // first of all remove mutliphrases with randomly picked phrase out of these
-        final String cleanedUtterance = resolveMultiPhraseCollections(utterance);
         final StringBuffer buffer = new StringBuffer();
         // extract all the placeholders found in the utterance
-        final Matcher slots = Pattern.compile("\\{(.*?)\\}").matcher(cleanedUtterance);
+        final Matcher slots = Pattern.compile("\\{(.*?)\\}").matcher(utterance);
         // for any of the placeholders ...
         while (slots.find()) {
             // ... placeholder-name is the slotName to look after in two places of the output

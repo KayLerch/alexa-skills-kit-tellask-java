@@ -12,6 +12,7 @@ import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.schema.UtteranceReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
@@ -27,6 +28,8 @@ import java.util.stream.Stream;
  * picks one of them randomly.
  */
 public class YamlReader {
+    private static final Logger LOG = Logger.getLogger(YamlReader.class);
+
     private final UtteranceReader utteranceReader;
     private final Map<String, List<Object>> phrases = new HashMap<>();
     private final String locale;
@@ -160,6 +163,7 @@ public class YamlReader {
                 // parse each phrase as string and add to return collection
                 ((ArrayList) assumedUtteranceCollection)
                         .stream()
+                        .map(resolveMultiPhrases)
                         .map(resolvePlaceholders)
                         .forEach(utterance -> utterances.add(String.valueOf(utterance)));
             } else if (assumedUtteranceCollection instanceof String) {
@@ -168,6 +172,27 @@ public class YamlReader {
         }
         return utterances;
     }
+
+    private Function<Object, String> resolveMultiPhrases = (final Object utterance) -> {
+        final StringBuffer buffer = new StringBuffer();
+        // extract all the phrase collection (e.g. [Hello|Hi|Welcome] found in the utterance
+        final Matcher multiPhrases = Pattern.compile("\\[(.*?)\\]").matcher(utterance.toString());
+        // for any of the multi-phrases ...
+        while (multiPhrases.find()) {
+            final String multiPhrase = multiPhrases.group(1);
+            // single phrases are delimited by pipes
+            final List<String> multiPhraseCollection = Arrays.asList(multiPhrase.split("\\|"));
+            // pick random phrase out of the collection
+            final String randomPhrase = getRandomOf(multiPhraseCollection).orElse("");
+            if (StringUtils.isBlank(randomPhrase)) {
+                LOG.warn("Empty multi-phrase collection found in one of your utterances. Got replaced by an empty string in speechlet response.");
+            }
+            multiPhrases.appendReplacement(buffer, randomPhrase);
+        }
+        multiPhrases.appendTail(buffer);
+        return buffer.toString();
+    };
+
     private Function<Object, String> resolvePlaceholders = (final Object utterance) -> {
         final StringBuffer buffer = new StringBuffer();
         // extract all the placeholders (e.g. ${placeholder}) found in the utterance
@@ -181,7 +206,7 @@ public class YamlReader {
             placeholders.appendReplacement(buffer, placeholderValues.get(0));
         }
         placeholders.appendTail(buffer);
-        return buffer.toString();
+        return resolveMultiPhrases.apply(buffer.toString());
     };
 
     private Optional<String> getRandomOf(final List<String> list) {

@@ -77,8 +77,7 @@ content of your skill in YAML files. You're much more flexible with this approac
 You manage those contents similar to how you do it in the Alexa developer console -
 by using __intents__ and __slots__. This is a sample YAML file
 ```yaml
-WelcomeSpeeches:
-  - "[Hello|Hi|Welcome|Hey]"
+WelcomeSpeeches: "[Hello|Hi|Welcome|Hey]"
 
 SayWelcome:
   Utterances:
