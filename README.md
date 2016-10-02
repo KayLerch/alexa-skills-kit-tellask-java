@@ -291,7 +291,7 @@ As an example you might end up with the following
             /utterances.yml
         /en-US
             /utterances.yml
-        /en-UK
+        /en-GB
             /utterances.yml
 
 Of course you can alter the file-structure as you want by customizing the _UtteranceReader_
@@ -315,7 +315,7 @@ and you will be able to structure your files like this:
                     /trailing
                         /path
                             /my-utterances.yml
-                /en-UK
+                /en-GB
                     /trailing
                         /path
                             /my-utterances.yml

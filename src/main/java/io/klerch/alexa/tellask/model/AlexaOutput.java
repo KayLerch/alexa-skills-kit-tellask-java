@@ -11,7 +11,6 @@ package io.klerch.alexa.tellask.model;
 import com.amazon.speech.ui.Card;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
-import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
 import io.klerch.alexa.tellask.schema.UtteranceReader;
 import org.apache.commons.lang3.Validate;
 

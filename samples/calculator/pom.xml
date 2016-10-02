@@ -59,7 +59,7 @@
         <dependency>
             <groupId>io.klerch</groupId>
             <artifactId>alexa-skills-kit-tellask-java</artifactId>
-            <version>0.2.0</version>
+            <version>0.2.1</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
