@@ -25,12 +25,14 @@ custom criteria - it was never that flexible to react on intents
 * Explicit exception handling in intent handlers to have Alexa react accordingly
 in any situation
 
-If you are more into Python you better check out John Wheeler's [flask-ask](https://github.com/johnwheeler/flask-ask) which is another powerful toolkit for building skills.
+#### References
+
+Learn how to use this SDK by having a look into the samples - where you can
+find reference implementations for multi-language skills. You can also learn
+from the open-sourced and award-winning [Morse Coder skill](https://github.com/KayLerch/alexa-skills-kit-tellask-java)
+which relies on Tellask SDK as well.
 
 ## How to use
-
-Learn how to use this SDK by having a look into the samples -
- where you can find reference implementations for a multi-language skills.
 
 Before you start make sure your IDE is set up for annotation processing. (How to for
 [IDEA](https://www.jetbrains.com/help/idea/2016.2/configuring-annotation-processing.html) and [Eclipse](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Fguide%2Fjdt_apt_getting_started.htm))
