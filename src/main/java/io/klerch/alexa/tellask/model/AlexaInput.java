@@ -14,6 +14,7 @@ import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletRequest;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
 import io.klerch.alexa.state.handler.AlexaStateHandler;
+import org.apache.commons.codec.language.ColognePhonetic;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -116,7 +117,8 @@ public class AlexaInput {
     /**
      * Checks if a slot is contained in the intent request and has a value which is a
      * phonetic sibling of the string given to this method. Double metaphone algorithm
-     * is used to match slot value with value given to this method.
+     * is optimized for English language and in this case is used to match slot value with
+     * value given to this method.
      * @param slotName name of the slot to look after
      * @param value the value
      * @return True, if slot value and given value are phonetically equal with Double metaphone algorithm
@@ -125,6 +127,36 @@ public class AlexaInput {
         final String slotValue = getSlotValue(slotName);
         return hasSlotNotBlank(slotName) && value != null &&
                 new DoubleMetaphone().isDoubleMetaphoneEqual(slotValue, value);
+    }
+
+    /**
+     * Checks if a slot is contained in the intent request and has a value which is a
+     * phonetic sibling of the string given to this method. Cologne phonetic algorithm
+     * is optimized for German language and in this case is used to match slot value with
+     * value given to this method.
+     * @param slotName name of the slot to look after
+     * @param value the value
+     * @return True, if slot value and given value are phonetically equal with Cologne phonetic algorithm
+     */
+    public boolean hasSlotIsCologneEqual(final String slotName, final String value) {
+        final String slotValue = getSlotValue(slotName);
+        return hasSlotNotBlank(slotName) && value != null &&
+                new ColognePhonetic().isEncodeEqual(slotValue, value);
+    }
+
+    /**
+     * Checks if a slot is contained in the intent request and has a value which is a
+     * phonetic sibling of the string given to this method. This method picks the correct
+     * algorithm depending on the locale coming in with the speechlet request. For example the
+     * German locale compares the slot value and the given value with the Cologne phonetic
+     * algorithm whereas english locales result in this method using the Double Metaphone algorithm.
+     * @param slotName name of the slot to look after
+     * @param value the value
+     * @return True, if slot value and given value are phonetically equal
+     */
+    public boolean hasSlotIsPhoneticallyEqual(final String slotName, final String value) {
+        return getLocale().equals("de-DE") ? hasSlotIsCologneEqual(slotName, value) :
+                hasSlotIsDoubleMetaphoneEqual(slotName, value);
     }
 
     /**

@@ -111,6 +111,36 @@ public class AlexaInputTest {
     }
 
     @Test
+    public void testHasSlotIsCologneEqual() throws Exception {
+        final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
+        final Session session = ModelFactory.givenSession();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+
+        Assert.assertTrue(input.hasSlotIsCologneEqual("slotString", "walu"));
+        Assert.assertFalse(input.hasSlotIsCologneEqual("slotString", "not-value"));
+        Assert.assertTrue(input.hasSlotIsCologneEqual("slotBoolean", "truhe"));
+        Assert.assertFalse(input.hasSlotIsCologneEqual("slotBoolean", "false"));
+
+        Assert.assertFalse(input.hasSlotIsCologneEqual("slotBlank", ""));
+        Assert.assertFalse(input.hasSlotIsCologneEqual("slotNull", "value"));
+    }
+
+    @Test
+    public void testHasSlotIsPhoneticallyEqual() throws Exception {
+        final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
+        final Session session = ModelFactory.givenSession();
+        final AlexaInput germanInput = new AlexaInput(request, session, "de-DE");
+
+        Assert.assertTrue(germanInput.hasSlotIsPhoneticallyEqual("slotBoolean", "truhe"));
+        Assert.assertFalse(germanInput.hasSlotIsPhoneticallyEqual("slotBoolean", "drew"));
+
+        final AlexaInput englishInput = new AlexaInput(request, session, LOCALE);
+
+        Assert.assertFalse(englishInput.hasSlotIsPhoneticallyEqual("slotBoolean", "truhe"));
+        Assert.assertTrue(englishInput.hasSlotIsPhoneticallyEqual("slotBoolean", "drew"));
+    }
+
+    @Test
     public void testHasSlot() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
         final Session session = ModelFactory.givenSession();

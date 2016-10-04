@@ -24,6 +24,8 @@ state management of your POJO models by using S3, Dynamo or Alexa session as a s
 custom criteria - it was never that flexible to react on intents
 * Explicit exception handling in intent handlers to have Alexa react accordingly
 in any situation
+* Helper methods for validating a slot value to comply with not only an exact literal
+but also with a phonetic equivalent (leveraging Metaphone or Cologne Phonetic algorithm)
 
 #### References
 
@@ -192,16 +194,23 @@ might be interesting to you:
         final boolean slotIsNumber = input.hasSlotIsNumber("slotName");
         final boolean slotIsNotBlank = input.hasSlotNotBlank("slotName");
         final boolean slotEquals = input.hasSlotIsEqual("slotName", "someValue");
-        final boolean slotPhoneticEqual = input.hasSlotIsDoubleMetaphoneEqual("slotName", "drew");
+        // find phonetic siblings - best for English language
+        final boolean slotEngPhoneticEqual = input.hasSlotIsDoubleMetaphoneEqual("slotName", "drew");
+        // find phonetic siblings - best for German language
+        final boolean slotGerPhoneticEqual = input.hasSlotIsCologneEqual("slotName", "truhe");
+        // find phonetic siblings - picks to best algorithm based on the current locale
+        final boolean slotPhoneticEqual = input.hasSlotIsPhoneticallyEqual("slotName", "truhe");
         final boolean slotHasTrueValue = input.hasSlotIsTrue("slotName");
         // ...
     }
 ```
 
 So you can check a slot for a number but also for a certain value. Moreover, you
-could even check for a phonetic equivalent by levering the [Double Metaphone](https://en.wikipedia.org/wiki/Metaphone#Double_Metaphone) algorithm.
+could even check for a phonetic equivalent by levering [Double Metaphone](https://en.wikipedia.org/wiki/Metaphone#Double_Metaphone)
+or [Cologne Phonetic](https://en.wikipedia.org/wiki/Cologne_phonetics) algorithm.
 For example the line checking for value of "drew" with _hasSlotIsDoubleMetaphoneEqual_ will
 return true if the slot value contains "true" as a value - which is a phonetic sibling of "drew".
+However, this is not true in German language but instead the word "truhe" is a phonetic sibling for "true".
 Finally you can obtain a slots value with _getSlotValue_.
 
 #### AlexaOutput
