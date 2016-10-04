@@ -1,5 +1,5 @@
 [![Join the chat at https://gitter.im/alexa-skills-kit-tellask-java/Lobby](https://badges.gitter.im/alexa-skills-kit-tellask-java/Lobby.svg)](https://gitter.im/alexa-skills-kit-tellask-java/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Maven central](https://img.shields.io/badge/maven%20central-v0.2.1-orange.svg)](http://search.maven.org/#artifactdetails%7Cio.klerch%7Calexa-skills-kit-tellask-java%7C0.2.1%7Cjar)
+[![Maven central](https://img.shields.io/badge/maven%20central-v0.2.2-orange.svg)](http://search.maven.org/#artifactdetails%7Cio.klerch%7Calexa-skills-kit-tellask-java%7C0.2.2%7Cjar)
 ![SonarQube Coverage](https://img.shields.io/badge/code%20coverage-88%25-green.svg)
 
 # Alexa Tellask SDK for Java
@@ -47,7 +47,7 @@ Add below Maven dependency to your project.
   <dependency>
     <groupId>io.klerch</groupId>
     <artifactId>alexa-skills-kit-tellask-java</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
   </dependency>
   ...
 </dependencies>
@@ -198,7 +198,7 @@ might be interesting to you:
         final boolean slotEngPhoneticEqual = input.hasSlotIsDoubleMetaphoneEqual("slotName", "drew");
         // find phonetic siblings - best for German language
         final boolean slotGerPhoneticEqual = input.hasSlotIsCologneEqual("slotName", "truhe");
-        // find phonetic siblings - picks to best algorithm based on the current locale
+        // find phonetic siblings - picks the best algorithm depending on the current locale
         final boolean slotPhoneticEqual = input.hasSlotIsPhoneticallyEqual("slotName", "truhe");
         final boolean slotHasTrueValue = input.hasSlotIsTrue("slotName");
         // ...
