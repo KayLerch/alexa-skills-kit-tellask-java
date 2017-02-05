@@ -64,6 +64,24 @@ public class AlexaSpeechletResponseTest {
                 ((SsmlOutputSpeech)response.getOutputSpeech()).getSsml());
         Assert.assertNull(response.getReprompt());
     }
+    // RJH FEB 2017 - added test for issue:
+    // ~ https://github.com/KayLerch/alexa-skills-kit-tellask-java/issues/1
+    @Test
+    public void getResponseWithSlotsMatcherQuoteReplacement() throws Exception {
+        final AlexaStateModelSample model = new AlexaStateModelSample();
+        model.setName("Paul");
+
+        final AlexaOutput output = AlexaOutput
+                .ask("IntentWithOneSlotReplacement")
+                .putSlot("theSlot", "$5.00")
+                .putState(model).build();
+
+        final AlexaSpeechletResponse response = new AlexaSpeechletResponse(output, new ResourceUtteranceReader(), "en-US");
+        Assert.assertEquals(output, response.getOutput());
+        Assert.assertEquals("<speak>This is a single slot replacement: $5.00</speak>",
+                ((SsmlOutputSpeech)response.getOutputSpeech()).getSsml());
+        Assert.assertNull(response.getReprompt());
+    }
 
     @Test
     public void getResponseWithReprompt() throws Exception {
