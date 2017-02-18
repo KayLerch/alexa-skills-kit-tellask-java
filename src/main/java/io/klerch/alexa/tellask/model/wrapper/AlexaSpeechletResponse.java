@@ -18,15 +18,10 @@ import io.klerch.alexa.tellask.model.AlexaOutput;
 import io.klerch.alexa.tellask.model.AlexaOutputSlot;
 import io.klerch.alexa.tellask.schema.UtteranceReader;
 import io.klerch.alexa.tellask.util.resource.YamlReader;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -145,11 +140,11 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
     private String resolveSlotsInUtterance(final String utterance) {
         final StringBuffer buffer = new StringBuffer();
         // extract all the placeholders found in the utterance
-        final Matcher slots = Pattern.compile("\\{(.*?)\\}").matcher(utterance);
+        final Matcher slotsInUtterance = Pattern.compile("\\{(.*?)\\}").matcher(utterance);
         // for any of the placeholders ...
-        while (slots.find()) {
+        while (slotsInUtterance.find()) {
             // ... placeholder-name is the slotName to look after in two places of the output
-            final String slotName = slots.group(1);
+            final String slotName = slotsInUtterance.group(1);
             final AlexaOutputSlot outputSlot = output
                     // prefer directly set output slots
                     .getSlots().stream()
@@ -157,18 +152,24 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
                     .filter(slot -> slot.getName().equals(slotName))
                     .findFirst()
                     // if not directly applied look in provided models for AlexaSlotSave fields
-                    .orElse(output.getModels()
-                            .stream()
-                            // for those having that AlexaSlotSave field
-                            .filter(model -> model.hasOutputSlot(slotName))
-                            // create a AlexaOutputSlot from attributes in annotation + the field value itself
-                            .map(model -> model.getOutputSlot(slotName).orElse(null))
-                            .findFirst().orElse(null));
+                    .orElse(getSavedSlot(slotName));
 
             Validate.notNull(outputSlot, "Could not replace placeholder with name {" + slotName + "} because no corresponding slot was set in the output.");
-            slots.appendReplacement(buffer, outputSlot.getSsml());
+            // RJH - FEB 2017 - Matcher.quoteReplacement on slot input to fix bug
+            // ~ https://github.com/KayLerch/alexa-skills-kit-tellask-java/issues/1
+            slotsInUtterance.appendReplacement(buffer, Matcher.quoteReplacement(outputSlot.getSsml()));
         }
-        slots.appendTail(buffer);
+        slotsInUtterance.appendTail(buffer);
         return "<speak>" + buffer.toString() + "</speak>";
+    }
+
+    private AlexaOutputSlot getSavedSlot(String slotName) {
+        return output.getModels()
+                .stream()
+                // for those having that AlexaSlotSave field
+                .filter(model -> model.hasOutputSlot(slotName))
+                // create a AlexaOutputSlot from attributes in annotation + the field value itself
+                .map(model -> model.getOutputSlot(slotName).orElse(null))
+                .findFirst().orElse(null);
     }
 }

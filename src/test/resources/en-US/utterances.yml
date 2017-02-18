@@ -43,6 +43,10 @@ IntentWithOneUtteranceAndOneReprompt:
   Reprompts:
     - "This is a reprompt {name} with your score of {credits}"
 
+IntentWithOneSlotReplacement:
+  Utterances:
+    - "This is a single slot replacement: {theSlot}"
+
 IntentWithInstantUtterance:
   - "Hello there {name}. Your current score is {credits} This is awesome"
   - "Welcome {name}. You got a score of {credits} You are awesome"
