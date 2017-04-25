@@ -128,7 +128,7 @@ public class LaunchHandler implements AlexaLaunchHandler {
 }
 ```
 There's only one launch handler per skill. The _handleRequest_ method simply asks
-you to turn an _AlexaInput_ (providing all necessary information like the session)
+you to turn an _AlexaInput_ (providing all necessary information like the session and context object)
 into an _AlexaOutput_. The output object is where you refer to the response intent
 you set up in the YAML file. You also give it a slot with name, value and
 optionally a __slot output format__. There's one format for each supported SSML-tag in Alexa so the
