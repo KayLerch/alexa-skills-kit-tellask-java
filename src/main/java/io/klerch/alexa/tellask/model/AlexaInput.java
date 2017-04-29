@@ -8,6 +8,7 @@
  */
 package io.klerch.alexa.tellask.model;
 
+import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Session;
@@ -28,6 +29,7 @@ public class AlexaInput {
     private final AlexaStateHandler sessionStateHandler;
     private IntentRequest intentRequest;
     private LaunchRequest launchRequest;
+    private Context context;
     private final String locale;
 
     /**
@@ -35,9 +37,11 @@ public class AlexaInput {
      * @param request the intent request
      * @param session the session object
      * @param locale the locale of the request
+     * @param context the Alexa service context
      */
-    public AlexaInput(final IntentRequest request, final Session session, final String locale) {
-        this(session, locale);this.intentRequest = request;
+    public AlexaInput(final IntentRequest request, final Session session, final String locale, final Context context) {
+        this(session, locale, context);
+        this.intentRequest = request;
         this.launchRequest = null;
     }
 
@@ -46,17 +50,18 @@ public class AlexaInput {
      * @param request the intent request
      * @param session the session object
      * @param locale the locale of the request
+     * @param context the Alexa service context
      */
-    public AlexaInput(final LaunchRequest request, final Session session, final String locale) {
-        this(session, locale);
+    public AlexaInput(final LaunchRequest request, final Session session, final String locale, final Context context) {
+        this(session, locale, context);
         this.intentRequest = null;
         this.launchRequest = request;
-
     }
 
-    private AlexaInput(final Session session, final String locale) {
+    private AlexaInput(final Session session, final String locale, final Context context) {
         this.sessionStateHandler = new AlexaSessionStateHandler(session);
         this.locale = locale;
+        this.context = context;
     }
 
     /**
@@ -83,6 +88,13 @@ public class AlexaInput {
         return intentRequest != null ? intentRequest : launchRequest;
     }
 
+    /**
+     * Context object with information about the current state of Alexa service and device at the time of the request.
+     * @return The context object.
+     */
+    public Context getContext() {
+        return context;
+    }
 
     /**
      * The locale given by the request (e.g. en-US)

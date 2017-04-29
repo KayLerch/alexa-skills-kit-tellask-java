@@ -112,6 +112,10 @@ public class ModelFactory {
                 .withApplication(application).withUser(user).build();
     }
 
+    public static com.amazon.speech.speechlet.Context givenAlexaContext() {
+        return com.amazon.speech.speechlet.Context.builder().build();
+    }
+
     public static IntentRequest givenIntentRequest(final String intentName, final Map<String, Slot> slots) {
         Map<String, Slot> slotsForSure = slots != null ? slots : new HashMap<>();
         final Intent intent = Intent.builder()
@@ -145,7 +149,7 @@ public class ModelFactory {
     }
 
     public static AlexaInput givenAlexaInput(final String locale, final String intentName) {
-        return new AlexaInput(givenIntentRequest(intentName), givenSession(), locale);
+        return new AlexaInput(givenIntentRequest(intentName), givenSession(), locale, givenAlexaContext());
     }
 
     public static AlexaOutput givenAlexaOutputWithIntent(final String intentName) {

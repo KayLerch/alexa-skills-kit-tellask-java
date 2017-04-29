@@ -8,19 +8,14 @@
  */
 package io.klerch.alexa.tellask.model.wrapper;
 
+import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
-import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import io.klerch.alexa.tellask.ModelFactory;
-import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechlet;
-import io.klerch.alexa.tellask.model.wrapper.AlexaSpeechletResponse;
 import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import java.util.HashMap;
@@ -41,12 +36,14 @@ public class AlexaSpeechletTest {
 
     @Test
     public void onSessionStarted() throws Exception {
-        speechlet.onSessionStarted(ModelFactory.givenSessionStartedRequest(), session);
+        SpeechletRequestEnvelope envelope = ModelFactory.givenIntentSpeechletRequestEnvelope();
+        speechlet.onSessionStarted(envelope);
     }
 
     @Test
     public void onLaunch() throws Exception {
-        final SpeechletResponse response = speechlet.onLaunch(ModelFactory.givenLaunchRequest(), session);
+
+        final SpeechletResponse response = speechlet.onLaunch(ModelFactory.givenLaunchSpeechletRequestEnvelope());
         Assert.assertNotNull(response);
         Assert.assertTrue(response instanceof AlexaSpeechletResponse);
 
@@ -67,10 +64,17 @@ public class AlexaSpeechletTest {
         Assert.assertEquals(repromptSpeech.getSsml(), "<speak>Hello again</speak>");
     }
 
+    // SpeechletV2 doesn't throw Exceptions
+    @Ignore
     @Test
     public void onIntentWithNoHandler() throws Exception {
-        exception.expect(SpeechletException.class);
-        speechlet.onIntent(ModelFactory.givenIntentRequest("IntentThatHasNoHandler"), session);
+        SpeechletRequestEnvelope speechletRequestEnvelope = SpeechletRequestEnvelope.builder()
+                .withRequest(ModelFactory.givenIntentRequest("IntentThatHasNoHandler"))
+                .withSession(session)
+                .build();
+        final SpeechletResponse response = speechlet.onIntent(speechletRequestEnvelope);
+        Assert.assertNotNull(response);
+        Assert.assertTrue(response instanceof AlexaSpeechletResponse);
     }
 
     @Test
@@ -80,7 +84,12 @@ public class AlexaSpeechletTest {
         slots.put("name", Slot.builder().withName("name").withValue("Joe").build());
         slots.put("credits", Slot.builder().withName("credits").withValue("notANumber").build());
 
-        final SpeechletResponse response = speechlet.onIntent(ModelFactory.givenIntentRequest("IntentWithOneUtteranceAndOneReprompt", slots), session);
+        SpeechletRequestEnvelope speechletRequestEnvelope = SpeechletRequestEnvelope.builder()
+                .withRequest(ModelFactory.givenIntentRequest("IntentWithOneUtteranceAndOneReprompt", slots))
+                .withSession(session)
+                .build();
+
+        final SpeechletResponse response = speechlet.onIntent(speechletRequestEnvelope);
         Assert.assertNotNull(response);
         Assert.assertTrue(response instanceof AlexaSpeechletResponse);
 
@@ -101,7 +110,13 @@ public class AlexaSpeechletTest {
         Map<String, Slot> slots = new HashMap<>();
         slots.put("name", Slot.builder().withName("name").withValue("Joe").build());
         slots.put("credits", Slot.builder().withName("credits").withValue("123").build());
-        final SpeechletResponse response = speechlet.onIntent(ModelFactory.givenIntentRequest("IntentWithOneUtteranceAndOneReprompt", slots), session);
+
+        SpeechletRequestEnvelope speechletRequestEnvelope = SpeechletRequestEnvelope.builder()
+                .withRequest(ModelFactory.givenIntentRequest("IntentWithOneUtteranceAndOneReprompt", slots))
+                .withSession(session)
+                .build();
+
+        final SpeechletResponse response = speechlet.onIntent(speechletRequestEnvelope);
         Assert.assertNotNull(response);
         Assert.assertTrue(response instanceof AlexaSpeechletResponse);
 
@@ -125,6 +140,11 @@ public class AlexaSpeechletTest {
 
     @Test
     public void onSessionEnded() throws Exception {
-        speechlet.onSessionEnded(ModelFactory.givenSessionEndedRequest(), session);
+        SpeechletRequestEnvelope speechletRequestEnvelope = SpeechletRequestEnvelope.builder()
+                .withRequest(ModelFactory.givenSessionEndedRequest())
+                .withSession(session)
+                .build();
+
+        speechlet.onSessionEnded(speechletRequestEnvelope);
     }
 }

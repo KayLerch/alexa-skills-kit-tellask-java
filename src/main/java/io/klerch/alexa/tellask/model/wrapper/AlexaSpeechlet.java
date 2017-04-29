@@ -8,6 +8,7 @@
  */
 package io.klerch.alexa.tellask.model.wrapper;
 
+import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.speechlet.*;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.model.AlexaInput;
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
  * annotated with either AlexaLaunchListener or AlexaIntentListener. Most likely you want
  * to override onSessionStarted and onSessionEnded to have your own routines implemented.
  */
-public class AlexaSpeechlet implements Speechlet {
+public class AlexaSpeechlet implements SpeechletV2 {
     private static final Logger LOG = Logger.getLogger(AlexaSpeechlet.class);
     private final String locale;
     private final UtteranceReader utteranceReader;
@@ -66,7 +67,7 @@ public class AlexaSpeechlet implements Speechlet {
      * {@inheritDoc}
      */
     @Override
-    public void onSessionStarted(final SessionStartedRequest request, final Session session) throws SpeechletException {
+    public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> envelope) {
         LOG.debug("Session has started.");
     }
 
@@ -74,8 +75,8 @@ public class AlexaSpeechlet implements Speechlet {
      * {@inheritDoc}
      */
     @Override
-    public SpeechletResponse onLaunch(final LaunchRequest request, final Session session) throws SpeechletException {
-        input = new AlexaInput(request, session, locale);
+    public SpeechletResponse onLaunch(SpeechletRequestEnvelope<LaunchRequest> envelope) {
+        input = new AlexaInput(envelope.getRequest(), envelope.getSession(), locale, envelope.getContext());
         final AlexaLaunchHandler handler = AlexaLaunchHandlerFactory.createHandler().orElse(null);
         return handleRequest(handler);
     }
@@ -84,8 +85,8 @@ public class AlexaSpeechlet implements Speechlet {
      * {@inheritDoc}
      */
     @Override
-    public SpeechletResponse onIntent(final IntentRequest request, final Session session) throws SpeechletException {
-        input = new AlexaInput(request, session, locale);
+    public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> envelope) {
+        input = new AlexaInput(envelope.getRequest(), envelope.getSession(), locale, envelope.getContext());
         final AlexaIntentHandler handler = AlexaIntentHandlerFactory.createHandler(input).orElse(null);
         return handleRequest(handler);
     }
@@ -94,16 +95,12 @@ public class AlexaSpeechlet implements Speechlet {
      * {@inheritDoc}
      */
     @Override
-    public void onSessionEnded(final SessionEndedRequest request, final Session session) throws SpeechletException {
+    public void onSessionEnded(SpeechletRequestEnvelope<SessionEndedRequest> envelope) {
         LOG.debug("Session has ended.");
     }
 
-    private AlexaSpeechletResponse handleRequest(final AlexaRequestHandler handler) throws SpeechletException {
+    private AlexaSpeechletResponse handleRequest(final AlexaRequestHandler handler) {
         AlexaSpeechletResponse response;
-
-        if (handler == null) {
-            throw new SpeechletException("Could not find a handler for speechlet request");
-        }
 
         try {
             final AlexaOutput output = handler.handleRequest(input);

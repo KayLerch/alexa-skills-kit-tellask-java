@@ -9,6 +9,7 @@
 package io.klerch.alexa.tellask.model;
 
 import com.amazon.speech.slu.Slot;
+import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Session;
@@ -41,7 +42,8 @@ public class AlexaInputTest {
     public void constructIntentInputAndGetMembers() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName");
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
 
         Assert.assertEquals(request, input.getRequest());
         Assert.assertNotNull(input.getSessionStateHandler());
@@ -52,7 +54,8 @@ public class AlexaInputTest {
     public void constructLaunchInputAndGetMembers() throws Exception {
         final LaunchRequest request = ModelFactory.givenLaunchRequest();
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
 
         Assert.assertEquals(request, input.getRequest());
         Assert.assertNotNull(input.getSessionStateHandler());
@@ -63,11 +66,13 @@ public class AlexaInputTest {
     public void testGetIntentName() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName");
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
         Assert.assertEquals("intentName", input.getIntentName());
 
         final LaunchRequest launchRequest = ModelFactory.givenLaunchRequest();
-        final AlexaInput input2 = new AlexaInput(launchRequest, session, LOCALE);
+        final AlexaInput input2 = new AlexaInput(launchRequest, session, LOCALE, context);
         Assert.assertNull(input2.getIntentName());
     }
 
@@ -75,7 +80,8 @@ public class AlexaInputTest {
     public void testGetLocale() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName");
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
         Assert.assertEquals(LOCALE, input.getLocale());
     }
 
@@ -83,7 +89,8 @@ public class AlexaInputTest {
     public void testHasSlotIsEqual() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
 
         Assert.assertTrue(input.hasSlotIsEqual("slotString", "value"));
         Assert.assertFalse(input.hasSlotIsEqual("slotString", "not-value"));
@@ -99,7 +106,8 @@ public class AlexaInputTest {
     public void testHasSlotIsDoubleMetaphoneEqual() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
 
         Assert.assertTrue(input.hasSlotIsDoubleMetaphoneEqual("slotString", "valui"));
         Assert.assertFalse(input.hasSlotIsDoubleMetaphoneEqual("slotString", "not-value"));
@@ -114,7 +122,8 @@ public class AlexaInputTest {
     public void testHasSlotIsCologneEqual() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
 
         Assert.assertTrue(input.hasSlotIsCologneEqual("slotString", "walu"));
         Assert.assertFalse(input.hasSlotIsCologneEqual("slotString", "not-value"));
@@ -129,12 +138,13 @@ public class AlexaInputTest {
     public void testHasSlotIsPhoneticallyEqual() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
         final Session session = ModelFactory.givenSession();
-        final AlexaInput germanInput = new AlexaInput(request, session, "de-DE");
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput germanInput = new AlexaInput(request, session, "de-DE", context);
 
         Assert.assertTrue(germanInput.hasSlotIsPhoneticallyEqual("slotBoolean", "truhe"));
         Assert.assertFalse(germanInput.hasSlotIsPhoneticallyEqual("slotBoolean", "drew"));
 
-        final AlexaInput englishInput = new AlexaInput(request, session, LOCALE);
+        final AlexaInput englishInput = new AlexaInput(request, session, LOCALE, context);
 
         Assert.assertFalse(englishInput.hasSlotIsPhoneticallyEqual("slotBoolean", "truhe"));
         Assert.assertTrue(englishInput.hasSlotIsPhoneticallyEqual("slotBoolean", "drew"));
@@ -144,7 +154,8 @@ public class AlexaInputTest {
     public void testHasSlot() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
 
         Assert.assertTrue(input.hasSlot("slotString"));
         Assert.assertFalse(input.hasSlot("slotThatDoesNotExist"));
@@ -168,7 +179,8 @@ public class AlexaInputTest {
     public void testGetSlotValue() throws Exception {
         final IntentRequest request = ModelFactory.givenIntentRequest("intentName", givenSlots());
         final Session session = ModelFactory.givenSession();
-        final AlexaInput input = new AlexaInput(request, session, LOCALE);
+        final Context context = ModelFactory.givenAlexaContext();
+        final AlexaInput input = new AlexaInput(request, session, LOCALE, context);
 
         final String sString = input.getSlotValue("slotString");
         Assert.assertEquals("value", sString);
