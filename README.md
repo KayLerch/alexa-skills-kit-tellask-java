@@ -47,7 +47,7 @@ Add below Maven dependency to your project.
   <dependency>
     <groupId>io.klerch</groupId>
     <artifactId>alexa-skills-kit-tellask-java</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.3</version>
   </dependency>
   ...
 </dependencies>
