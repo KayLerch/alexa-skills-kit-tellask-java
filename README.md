@@ -1,3 +1,5 @@
+EOL: This project has been deprecated. The SDK was born to address gaps in the [official Alexa SDK for Java](https://github.com/alexa/alexa-skills-kit-sdk-for-java). Since the official SDK improved a lot and is now in way better shape there is no need to further drive this project.
+
 [![Join the chat at https://gitter.im/alexa-skills-kit-tellask-java/Lobby](https://badges.gitter.im/alexa-skills-kit-tellask-java/Lobby.svg)](https://gitter.im/alexa-skills-kit-tellask-java/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Maven central](https://img.shields.io/badge/maven%20central-v0.2.3-orange.svg)](http://search.maven.org/#artifactdetails%7Cio.klerch%7Calexa-skills-kit-tellask-java%7C0.2.3%7Cjar)
 ![SonarQube Coverage](https://img.shields.io/badge/code%20coverage-88%25-green.svg)
